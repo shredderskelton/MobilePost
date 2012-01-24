@@ -11,6 +11,7 @@ import sparta.workout.models.SoundResource;
 import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -48,6 +49,8 @@ public class WorkoutActivity extends Activity {
 
 	int SOUND_STREAM_ONE = 1;
 
+	ProgressDialog startupProgressDialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,9 +58,14 @@ public class WorkoutActivity extends Activity {
 
 		setContentView(R.layout.workout);
 
-		initSoundPool();
+		startupProgressDialog = new ProgressDialog(this);
 
-		workout = getNormalWorkout();
+		startupProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		startupProgressDialog.setMessage("Preparing for WAR!");
+		startupProgressDialog.setCancelable(false);
+		startupProgressDialog.show();
+
+		new PrepareStartupAsyncTask().execute(new Object());
 
 		currentExerciceText = (TextView) findViewById(R.id.textViewCurrentExercise);
 		stopButton = (Button) findViewById(R.id.buttonStop);
@@ -67,10 +75,29 @@ public class WorkoutActivity extends Activity {
 
 		currentExerciceText.setText("Get ready for war!");
 
-		resumeTimer();
+	}
 
-		AddHandlers();
+	public class PrepareStartupAsyncTask extends AsyncTask<Object, Void, Void> {
 
+		@Override
+		protected Void doInBackground(Object... o) {
+
+			initSoundPool();
+			workout = getNormalWorkout();
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+
+			AddHandlers();
+			resumeTimer();
+			startupProgressDialog.dismiss();
+
+			super.onPostExecute(result);
+
+		}
 	}
 
 	private void initSoundPool() {
