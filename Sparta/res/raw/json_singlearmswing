@@ -1,0 +1,13 @@
+
+	{
+	"name":"Single Arm Dumbbell Swing",
+	"order" : 3,
+	"soundname" : "dumbbellswing",
+	"directions":
+		[
+	"hold a dumbbell (or a kettlebell) at arm’s length in front of your waist. Without rounding your lower back, bend at your hips and knees and swing the dumbbell between your legs",
+	"Keeping your arm straight, thrust your hips forward and swing the dumbbell to shoulder level as you rise to a standing position",
+	"swing the weight back and forth. At the 30-second mark, switch arms"
+		]
+		
+	}

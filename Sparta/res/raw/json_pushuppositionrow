@@ -1,0 +1,13 @@
+
+	{
+	"name":"Push up Position Row",
+	"soundname" : "pushpositionrow",
+	"order" : 8,
+	"directions":
+		[
+			"grab a pair of hex dumbbells and assume a pushup position, your arms straight",
+			"Keeping your core stiff, row the dumbbell in your right hand to the side of your chest, bending your arm as you pull it upward",
+			"pause, and then quickly lower the dumbbell. Repeat with your left arm"
+		]
+		
+	}

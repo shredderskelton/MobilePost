@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textViewCurrentExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Goblet Squat"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/buttonStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonpauseresume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pauseResumeToggleButton" android:textOff="Playing" android:textOn="Paused"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewTimeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="60"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textViewUpNextExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mountain Climber"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

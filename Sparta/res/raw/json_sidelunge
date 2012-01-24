@@ -1,0 +1,13 @@
+
+	{
+	"name":"Side Lunge",
+	"soundname" : "sidelunge",
+	"order" : 7,
+	"directions":
+		[
+			"hold a pair of dumbbells at arm’s length at your sides",
+			"Take a big step to your left and lower your body by pushing your hips backward and bending your left knee. As you lower your body, bend forward at your hips and touch the dumbbells to the floor",
+			"Repeat for 30 seconds, and then switch to your right leg. If the exercise is too hard, do the move without the dumbbells; just reach for the floor with your hands"
+		]
+		
+	}

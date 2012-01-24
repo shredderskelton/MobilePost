@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <ToggleButton
+                android:id="@+id/toggleButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ToggleButton" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="Id" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editTeasxt1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="Zone Id" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editasdasText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="Location" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editasdasTenxt1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Zone Description" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editTwewext1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="mAmps" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editTesxt1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Zone Description" >
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editTsssaext1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Safety timer" >
+
+                <requestFocus />
+            </EditText>
+
+            <RadioGroup
+                android:id="@+id/radioGroup1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <RadioButton
+                    android:id="@+id/radio0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="12VDC" />
+
+                <RadioButton
+                    android:id="@+id/radio1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24VAC" />
+
+                <RadioButton
+                    android:id="@+id/radio2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unused" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

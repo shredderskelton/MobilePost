@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello Nick, SpartaActivity!</string>
+    <string name="app_name">Sparta</string>
+
+</resources>

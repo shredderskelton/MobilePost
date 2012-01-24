@@ -1,0 +1,13 @@
+
+	{
+	"name":"Lunge & Rotate",
+	"order":9,
+	"soundname" : "lungeandrotate",
+	"directions":
+		[
+			"grab a dumbbell and hold it horizontally by its ends, just under your chin",
+			"step forward with your right foot and lower your body into a lunge. As you lunge, rotate your upper body to the right",
+			"Return to the starting position, and repeat with your left leg. Alternate left and right until your 60 seconds are up. If the exercise is too hard, perform the movement without the dumbbell"	
+		]
+		
+	}

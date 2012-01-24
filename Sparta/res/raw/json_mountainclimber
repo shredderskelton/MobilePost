@@ -1,0 +1,13 @@
+
+	{
+	"name":"Mountain Climber",
+	"soundname":"mountainclimber",
+	"order": 2,
+	"directions":
+		[
+			"Assume a pushup position with your arms completely straight. your body should form a straight line from your head to your ankles",
+			"Without allowing your lower-back posture to change, lift your right foot off the floor and slowly move your right knee toward your chest",
+			"Return to the starting position, and repeat with your left leg. Alternate back and forth for the duration of the set"
+		]
+		
+	}

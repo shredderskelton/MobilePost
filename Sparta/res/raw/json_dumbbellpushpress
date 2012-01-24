@@ -1,0 +1,14 @@
+
+	{
+	"name":"Dumbbell Push Press",
+	"soundname" : "dumbbellpushpress",
+	"order" : 10,
+	"directions":
+		[
+			"stand holding a pair of dumbbells just outside your shoulders, with your arms bent and palms facing each other. stand with your feet shoulder-width apart and knees slightly bent",
+			"dip your knees",
+			"and then explosively push up with your legs as you press the weights straight over your shoulders",
+			"lower the dumbbells back to the starting position and repeat"
+		]
+		
+	}

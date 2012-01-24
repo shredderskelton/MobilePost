@@ -1,0 +1,14 @@
+
+	{
+	"name":"T Pushup",
+	"soundname" : "tpushup",
+	"order":4,
+	"directions":
+	[
+		"Grab a pair of hex dumbbells and assume a pushup position, your arms straight.",
+		"Bend your elbows and lower your body until your chest nearly touches the floor.",
+		"As you push yourself back up, lift your right hand and rotate the right side of your body as you raise the dumbbell straight up over your shoulder until your body forms a T.",
+		"Reverse the move and repeat, this time rotating your left side."
+	]
+		
+	}
