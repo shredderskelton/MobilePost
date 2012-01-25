@@ -3,9 +3,6 @@ package sparta.workout.application;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import sparta.workout.models.Exercise;
 import sparta.workout.models.SoundResource;
 import sparta.workout.models.Workout;
@@ -42,7 +39,7 @@ public class WorkoutActivity extends Activity {
 	Workout workout;
 
 	Boolean isResting = true;
-
+	Boolean isPaused = false;
 	// Sound control
 	SoundPool soundPool;
 	HashMap<Integer, SoundResource> soundIdToSoundResourceMap;
@@ -100,6 +97,7 @@ public class WorkoutActivity extends Activity {
 		}
 	}
 
+	/* SOUND */
 	private void initSoundPool() {
 		soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 		soundIdToSoundResourceMap = new HashMap();
@@ -267,7 +265,7 @@ public class WorkoutActivity extends Activity {
 
 	private void processTimeRemaining(int secondsLeft) {
 
-		if (workout.exerciseHalfway == secondsLeft) {
+		if (!isResting && workout.exerciseHalfway == secondsLeft) {
 			playResourceInSoundPool(R.raw.control_halfway, 1);
 			return;
 		}
@@ -331,20 +329,6 @@ public class WorkoutActivity extends Activity {
 			resumeTimer();
 	}
 
-	@Override
-	protected void onDestroy() {
-		RemoveHandlers();
-		intent = null;
-
-		if (timer != null)
-			timer.cancel();
-
-		if (soundPool != null) {
-			soundPool.release();
-			soundPool = null;
-		}
-	};
-
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
 		stopButton.setOnClickListener(null);
@@ -366,17 +350,27 @@ public class WorkoutActivity extends Activity {
 	};
 	private View.OnClickListener pauseresumeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-
-			if (pauseResumeButton.isChecked())
-				timer.cancel();
-			else
-				resumeTimer();
+			togglePauseWorkout();
 		}
 
 	};
 
+	private void togglePauseWorkout() {
+		isPaused = !isPaused;
+
+		if (isPaused) {
+			timer.cancel();
+		} else {
+			resumeTimer();
+		}
+
+		pauseResumeButton.setChecked(isPaused);
+
+	}
+
 	private void confirmStopWorkout() {
 
+		togglePauseWorkout();
 		String message = "Are you sure you want to cancel the workout?";
 		String title = "Leave Sparta with your tail between your legs?";
 		String yes = "I am a pussy";
@@ -385,13 +379,14 @@ public class WorkoutActivity extends Activity {
 		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 
-				gobacktomain();
+				navigateBacktomain();
 
 				dialog.dismiss();
 
 			}
 		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
+				togglePauseWorkout();
 				dialog.cancel();
 			}
 		});
@@ -400,15 +395,29 @@ public class WorkoutActivity extends Activity {
 
 	}
 
-	private void gobacktomain() {
+	@Override
+	protected void onDestroy() {
+		RemoveHandlers();
+		intent = null;
+
+		if (timer != null)
+			timer.cancel();
+
+		if (soundPool != null) {
+			soundPool.release();
+			soundPool = null;
+		}
+	};
+
+	private void navigateBacktomain() {
 		intent = new Intent(this, SpartaActivity.class);
 		startActivity(intent);
-
 	}
 
 	public final Workout getNormalWorkout() {
 
 		Workout regular = new Workout();
+
 		regular.Routines.push(fromJson(R.raw.json_goblet));
 		regular.Routines.push(fromJson(R.raw.json_mountainclimber));
 		regular.Routines.push(fromJson(R.raw.json_singlearmswing));
@@ -426,35 +435,21 @@ public class WorkoutActivity extends Activity {
 
 	public Exercise fromJson(int resourceId) {
 
-		Exercise objEx = new Exercise();
-		String str;
-
 		try {
 			InputStream is = this.getResources().openRawResource(resourceId);
 			byte[] buffer = new byte[is.available()];
 			while (is.read(buffer) != -1)
 				;
+
 			String jsontext = new String(buffer);
-			JSONObject post = new JSONObject(jsontext);
 
-			objEx.Name = post.getString("name");
-			objEx.soundResourceName = post.getString("soundname");
+			return new Exercise(jsontext);
 
-			JSONArray directions = post.getJSONArray("directions");
-
-			objEx.directions = new String[directions.length()];
-
-			for (int ii = 0; ii < directions.length(); ii++) {
-				objEx.directions[ii] = directions.getString(ii) + "\n";
-			}
-
-		} catch (Exception je) {
-			str = "Error w/file: " + je.getMessage();
+		} catch (Exception ex) {
+			Log.e("JSON", "Error opening stream");
 		}
 
-		Log.i("JSON", "Successfully parsed Exercise: " + objEx.Name);
-
-		return objEx;
+		return null;
 	}
 
 }

@@ -17,23 +17,29 @@ public class Exercise {
 	}
 
 	public Exercise(String jsontext) {
+
 		try {
 			JSONObject post = new JSONObject(jsontext);
 
-			Name = post.getString("name");
+			this.Name = post.getString("name");
+			this.soundResourceName = post.getString("soundname");
 
-			Name = post.getString("soundname");
+			JSONArray directions = post.getJSONArray("directions");
 
-			JSONArray jdirections = post.getJSONArray("directions");
-			directions = new String[jdirections.length()];
-			for (int ii = 0; ii < jdirections.length(); ii++) {
-				directions[ii] = jdirections.getString(ii) + "\n";
+			this.directions = new String[directions.length()];
 
+			for (int ii = 0; ii < directions.length(); ii++) {
+				this.directions[ii] = directions.getString(ii) + "\n";
 			}
 
 		} catch (Exception je) {
-			Log.e("JSON", "Error extracting exercise details: " + je.getMessage());
+			Log.e("JSON", "Failed to parse resource into JSON");
+			return;
 		}
+
+		Log.i("JSON", "Successfully parsed Exercise: " + this.Name);
+
+		return;
 	}
 
 }
