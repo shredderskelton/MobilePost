@@ -11,11 +11,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +47,7 @@ public class WorkoutActivity extends Activity {
 	HashMap<Integer, SoundResource> soundIdToSoundResourceMap;
 
 	int SOUND_STREAM_ONE = 1;
-
+	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
 
 	@Override
@@ -70,6 +72,8 @@ public class WorkoutActivity extends Activity {
 		upNextExerciceText = (TextView) findViewById(R.id.textViewUpNextExercise);
 		timeRemainingText = (TextView) findViewById(R.id.textViewTimeLeft);
 
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
 		currentExerciceText.setText("Get ready for war!");
 
 	}
@@ -81,6 +85,12 @@ public class WorkoutActivity extends Activity {
 
 			initSoundPool();
 			workout = getNormalWorkout();
+
+			int exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
+			int restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
+
+			workout.restInterval = restSetting;
+			workout.exerciseInterval = exerciseSetting;
 
 			return null;
 		}
