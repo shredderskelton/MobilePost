@@ -1,25 +1,25 @@
 package sparta.workout.application;
 
 import java.io.InputStream;
-import java.util.HashMap;
 
+import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.Exercise;
-import sparta.workout.models.SoundResource;
 import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -30,6 +30,9 @@ public class WorkoutActivity extends Activity {
 	ImageButton skipButton;
 	TextView upNextExerciceText;
 	TextView timeRemainingText;
+	Button timeRemainingButton;
+	TextView currentExerciseDetails;
+	ImageButton exerciseInfoButton;
 
 	Intent intent;
 
@@ -41,11 +44,9 @@ public class WorkoutActivity extends Activity {
 
 	Boolean isResting = true;
 	Boolean isPaused = false;
-	// Sound control
-	SoundPool soundPool;
-	HashMap<Integer, SoundResource> soundIdToSoundResourceMap;
 
-	int SOUND_STREAM_ONE = 1;
+	SoundManager soundManager;
+
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
 
@@ -62,6 +63,7 @@ public class WorkoutActivity extends Activity {
 		startupProgressDialog.setMessage("Preparing for WAR!");
 		startupProgressDialog.setCancelable(false);
 		startupProgressDialog.show();
+		soundManager = new SoundManager((AudioManager) this.getSystemService(AUDIO_SERVICE), (Context) this);
 
 		new PrepareStartupAsyncTask().execute(new Object());
 
@@ -70,6 +72,12 @@ public class WorkoutActivity extends Activity {
 		skipButton = (ImageButton) findViewById(R.id.imageButtonNext);
 		upNextExerciceText = (TextView) findViewById(R.id.textViewUpNextExercise);
 		timeRemainingText = (TextView) findViewById(R.id.textViewTimeLeft);
+		timeRemainingButton = (Button) findViewById(R.id.buttonTimeLeft);
+		currentExerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
+		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
+
+		timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
+		currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -82,7 +90,8 @@ public class WorkoutActivity extends Activity {
 		@Override
 		protected Void doInBackground(Object... o) {
 
-			initSoundPool();
+			// initSoundPool();
+			soundManager.Initialise();
 			workout = getNormalWorkout();
 
 			int exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
@@ -106,108 +115,6 @@ public class WorkoutActivity extends Activity {
 		}
 	}
 
-	/* SOUND */
-	private void initSoundPool() {
-		soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
-		soundIdToSoundResourceMap = new HashMap();
-
-		loadUpASample(R.raw.control_halfway, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_restfor, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_seconds, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_upnext, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_eight, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_fifteen, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_five, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_fortyfive, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_four, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_nine, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_ninety, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_one, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_onetwenty, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_seven, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_six, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_sixty, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_ten, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_two, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_twenty, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_three, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_thirty, SOUND_STREAM_ONE);
-		/*
-		 * loadUpASample(R.raw.taunt_athenian, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_deathitshallbe, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_diebyyourside, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_dineinhell, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_endsinclimax, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_gladiatorspeech, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_immortals, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_neverretreat, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_onyourshield, SOUND_STREAM_ONE);
-		 */
-		loadUpASample(R.raw.taunt_persaincowards, SOUND_STREAM_ONE);
-
-		loadUpASample(R.raw.exercise_dumbbellpushpress, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_dumbbellrow, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_dumbbellswing, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_gobletsquat, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_lungeandrotate, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_mountainclimber, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_pushpositionrow, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_sidelunge, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_splitjump, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_tpushup, SOUND_STREAM_ONE);
-
-	}
-
-	private void playResourceInSoundPool(int resId, int priority) {
-
-		if (soundIdToSoundResourceMap.containsKey(resId)) {
-
-			SoundResource soundId = soundIdToSoundResourceMap.get(resId);
-
-			AudioManager audioManager = (AudioManager) getSystemService(this.AUDIO_SERVICE);
-			float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-			float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-			float leftVolume = curVolume / maxVolume;
-			float rightVolume = curVolume / maxVolume;
-			int no_loop = 0;
-			float normal_playback_rate = 1f;
-			soundPool.stop(SOUND_STREAM_ONE);
-			soundPool.play(soundId.soundPoolHandle, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
-
-		}
-
-	}
-
-	public class PlaySoundQueueAsyncTask extends AsyncTask<SoundResource, Void, Void> {
-
-		@Override
-		protected Void doInBackground(SoundResource... resId) {
-
-			for (SoundResource s : resId) {
-				try {
-					if (s != null) {
-						playResourceInSoundPool(s.resourceId, 1);
-					}
-					Thread.sleep(s.duration + 200);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-			return null;
-		}
-
-	}
-
-	private void loadUpASample(int resId, int streamId) {
-
-		SoundResource sRes = new SoundResource(resId);
-		sRes.soundPoolHandle = soundPool.load(this, resId, streamId);
-		sRes.duration = sRes.getDuration(this.getResources().openRawResourceFd(resId).getFileDescriptor());
-		soundIdToSoundResourceMap.put(resId, sRes);
-
-	}
-
 	private void resumeTimer() {
 
 		String nextUpStr;
@@ -229,31 +136,7 @@ public class WorkoutActivity extends Activity {
 
 			@Override
 			public void onFinish() {
-				if (isResting) {
-					// you just finished resting
-					playResourceInSoundPool(R.raw.taunt_persaincowards, 1);
-					// mountain climber
-					timeLeft = workout.exerciseInterval * 1000;
-				} else {
-					// you just finished exercising
-					int rawSoundId = SoundResource.GetNumberSound(workout.restInterval);
 
-					SoundResource restfor = soundIdToSoundResourceMap.get(R.raw.control_restfor);
-					SoundResource n = soundIdToSoundResourceMap.get(rawSoundId);
-					SoundResource secs = soundIdToSoundResourceMap.get(R.raw.control_seconds);
-
-					Exercise e = workout.Routines.peek();
-					if (e != null) {
-						int rawExerciseSoundId = SoundResource.GetExerciseSound(e.soundResourceName);
-						SoundResource upnext = soundIdToSoundResourceMap.get(R.raw.control_upnext);
-						SoundResource ne = soundIdToSoundResourceMap.get(rawExerciseSoundId);
-						new PlaySoundQueueAsyncTask().execute(restfor, n, secs, upnext, ne);
-					} else {
-						new PlaySoundQueueAsyncTask().execute(restfor, n, secs);
-					}
-					timeLeft = workout.restInterval * 1000;
-				}
-				isResting = !isResting;
 				nextExercise();
 			}
 
@@ -262,6 +145,7 @@ public class WorkoutActivity extends Activity {
 				timeLeft = msLeft;
 
 				timeRemainingText.setText("" + msLeft / 1000);
+				timeRemainingButton.setText("" + msLeft / 1000);
 
 				int secsLeft = (int) (msLeft / 1000);
 
@@ -275,53 +159,11 @@ public class WorkoutActivity extends Activity {
 	private void processTimeRemaining(int secondsLeft) {
 
 		if (!isResting && workout.exerciseHalfway == secondsLeft) {
-			playResourceInSoundPool(R.raw.control_halfway, 1);
+			soundManager.playResourceInSoundPool(R.raw.control_halfway, 1);
 			return;
 		}
 
-		switch (secondsLeft) {
-
-		case 1: {
-			playResourceInSoundPool(R.raw.countdown_one, 1);
-			break;
-		}
-		case 2: {
-			playResourceInSoundPool(R.raw.countdown_two, 1);
-			break;
-		}
-		case 3: {
-			playResourceInSoundPool(R.raw.countdown_three, 1);
-			break;
-		}
-		case 4: {
-			playResourceInSoundPool(R.raw.countdown_four, 1);
-			break;
-		}
-		case 5: {
-			playResourceInSoundPool(R.raw.countdown_five, 1);
-			break;
-		}
-		case 6: {
-			playResourceInSoundPool(R.raw.countdown_six, 1);
-			break;
-		}
-		case 7: {
-			playResourceInSoundPool(R.raw.countdown_seven, 1);
-			break;
-		}
-		case 8: {
-			playResourceInSoundPool(R.raw.countdown_eight, 1);
-			break;
-		}
-		case 9: {
-			playResourceInSoundPool(R.raw.countdown_nine, 1);
-			break;
-		}
-		case 10: {
-			playResourceInSoundPool(R.raw.countdown_ten, 1);
-			break;
-		}
-		}
+		soundManager.playNumber(secondsLeft);
 	}
 
 	private void AllDone() {
@@ -331,7 +173,21 @@ public class WorkoutActivity extends Activity {
 	}
 
 	private void nextExercise() {
+
+		if (isResting) {
+			// you just finished resting
+			soundManager.playResourceInSoundPool(R.raw.taunt_persaincowards, 1);
+			// mountain climber
+			timeLeft = workout.exerciseInterval * 1000;
+		} else {
+			// you just finished exercising
+			soundManager.AnnounceNextExercise(workout);
+			timeLeft = workout.restInterval * 1000;
+		}
+		isResting = !isResting;
+
 		currentExerciceText.setText(upNextExerciceText.getText());
+
 		if (currentExerciceText.getText() == "Finish")
 			AllDone();
 		else
@@ -340,18 +196,30 @@ public class WorkoutActivity extends Activity {
 
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
+		timeRemainingButton.setOnClickListener(null);
+		exerciseInfoButton.setOnClickListener(null);
 		pauseResumeButton.setOnClickListener(null);
 	}
 
 	private void AddHandlers() {
 		// Register the Click handler for the button.
+		timeRemainingButton.setOnClickListener(timeRemainingButtonClickListener);
+		exerciseInfoButton.setOnClickListener(exerciseInfoButtonClickListener);
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
 	}
 
 	/** Event listeners */
-	private View.OnClickListener startButtonClickListener = new View.OnClickListener() {
+	private View.OnClickListener timeRemainingButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			confirmStopWorkout();
+			timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
+			currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
+		}
+
+	};
+	private View.OnClickListener exerciseInfoButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			timeRemainingText.setVisibility(timeRemainingText.INVISIBLE);
+			currentExerciseDetails.setVisibility(timeRemainingText.VISIBLE);
 		}
 
 	};
@@ -410,10 +278,6 @@ public class WorkoutActivity extends Activity {
 		if (timer != null)
 			timer.cancel();
 
-		if (soundPool != null) {
-			soundPool.release();
-			soundPool = null;
-		}
 	};
 
 	private void navigateBacktomain() {
