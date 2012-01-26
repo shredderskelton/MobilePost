@@ -5,15 +5,26 @@
     android:orientation="vertical" >
 
     <TextView
-         android:id="@+id/mytextview"
-        android:layout_width="fill_parent"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:layout_gravity="center"
+        android:text="@string/main_title"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
+    <ImageButton
         android:id="@+id/buttonStart"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is Sparta!" />
+        android:layout_gravity="center"
+        android:src="@drawable/thisissparta" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/main_direction"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

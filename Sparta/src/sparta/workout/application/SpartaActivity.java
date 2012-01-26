@@ -3,12 +3,14 @@ package sparta.workout.application;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 public class SpartaActivity extends Activity {
 
-	private Button startButton;
+	private ImageButton startButton;
 
 	private Intent intent;
 
@@ -19,7 +21,7 @@ public class SpartaActivity extends Activity {
 
 		setContentView(R.layout.main);
 
-		this.startButton = (Button) findViewById(R.id.buttonStart);
+		this.startButton = (ImageButton) findViewById(R.id.buttonStart);
 
 		AddHandlers();
 
@@ -30,6 +32,13 @@ public class SpartaActivity extends Activity {
 		RemoveHandlers();
 		intent = null;
 	};
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
 
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks

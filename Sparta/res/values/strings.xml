@@ -3,5 +3,8 @@
 
     <string name="hello">Hello Nick, SpartaActivity!</string>
     <string name="app_name">Sparta</string>
+    <string name="main_title">Spartacus Workout</string>
+    <string name="main_direction">Click Leo to start workout</string>
+    <string name="settings">Settings</string>
 
 </resources>
