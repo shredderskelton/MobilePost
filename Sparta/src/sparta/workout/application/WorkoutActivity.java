@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -85,6 +86,16 @@ public class WorkoutActivity extends Activity {
 
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			confirmStopWorkout();
+			return true;
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
+
 	public class PrepareStartupAsyncTask extends AsyncTask<Object, Void, Void> {
 
 		@Override
@@ -149,7 +160,11 @@ public class WorkoutActivity extends Activity {
 
 				int secsLeft = (int) (msLeft / 1000);
 
-				processTimeRemaining(secsLeft);
+				// Only countdown from 5 in rest mode
+				if (isResting && secsLeft > 5) {
+				} else {
+					processTimeRemaining(secsLeft);
+				}
 
 			}
 

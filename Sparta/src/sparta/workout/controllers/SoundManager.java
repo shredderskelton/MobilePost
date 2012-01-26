@@ -179,6 +179,10 @@ public class SoundManager {
 		}
 	}
 
+	public void PlayATaunt() {
+
+	}
+
 	public class PlaySoundQueueAsyncTask extends AsyncTask<SoundResource, Void, Void> {
 
 		@Override
