@@ -1,48 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/textViewCurrentExercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Goblet Squat"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/buttonStop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop" />
-
-        <ToggleButton
-            android:id="@+id/toggleButtonpauseresume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pauseResumeToggleButton" android:textOff="Playing" android:textOn="Paused"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textViewTimeLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="60"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    android:layout_height="match_parent" >
 
     <TextView
         android:id="@+id/textViewUpNextExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="56dp"
         android:text="Mountain Climber"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/textViewCurrentExerciseLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/currentExerciseLabel"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageButton
+        android:id="@+id/infoToggleButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textViewCurrentExerciseLabel"
+        android:src="@android:drawable/ic_menu_info_details" />
+
+    <Button
+        android:id="@+id/buttonTimeLeft"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignTop="@+id/infoToggleButton"
+        android:layout_toLeftOf="@+id/infoToggleButton"
+        android:text="60"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/textViewCurrentExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/buttonTimeLeft"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/buttonTimeLeft"
+        android:layout_toLeftOf="@+id/buttonTimeLeft"
+        android:text="Goblet Squat"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textViewTimeLeft"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewCurrentExercise"
+        android:layout_centerInParent="true"
+        android:height="300dp"
+        android:text="60"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="250dp" />
+    <TextView
+        android:id="@+id/textViewExerciseDetails"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewCurrentExercise"
+        android:layout_centerInParent="true"
+        android:height="300dp"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque luctus lectus ut libero suscipit ac semper erat suscipit. Nam at odio ac purus hendrerit rutrum non non lacus. Cras euismod porttitor neque, ut mattis libero sagittis eget. Vivamus rhoncus fermentum tellus id fermentum. Nullam id mi quis dui mattis lacinia. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec viverra, nunc eget posuere venenatis, elit enim tempus massa, ultricies varius justo dolor eget sem. Maecenas vestibulum tincidunt gravida. Sed eget orci odio, auctor viverra mi. Vivamus aliquet congue massa, nec volutpat enim sodales eget. In neque erat, volutpat rutrum pharetra non, varius in nisi. Sed lacus massa, dapibus vitae lobortis ut, adipiscing et dui. Nulla quis tortor id purus rhoncus commodo. Duis imperdiet tortor porttitor tellus porttitor quis consectetur mauris ornare."/>
+
+    <TextView
+        android:id="@+id/TextViewUpNextExerciceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewUpNextExercise"
+        android:layout_alignParentLeft="true"
+        android:text="@string/newExerciseLabel"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageButton
+        android:id="@+id/ImageButtonPlayPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textViewTimeLeft"
+        android:layout_alignParentLeft="true"
+        android:src="@android:drawable/ic_media_play" />
+
+    <ImageButton
+        android:id="@+id/imageButtonNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textViewTimeLeft"
+        android:layout_toRightOf="@+id/ImageButtonPlayPause"
+        android:src="@android:drawable/ic_media_next" />
+
+</RelativeLayout>

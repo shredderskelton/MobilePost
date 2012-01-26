@@ -29,5 +29,7 @@
         <item>Nick</item>
         <item>Sean</item>
     </string-array>
+        <string name="currentExerciseLabel">Current Exercise</string>
+        <string name="newExerciseLabel">Up next</string>
 
 </resources>

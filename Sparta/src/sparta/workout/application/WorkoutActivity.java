@@ -20,15 +20,14 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 public class WorkoutActivity extends Activity {
 
 	TextView currentExerciceText;
-	Button stopButton;
-	ToggleButton pauseResumeButton;
+	ImageButton pauseResumeButton;
+	ImageButton skipButton;
 	TextView upNextExerciceText;
 	TextView timeRemainingText;
 
@@ -67,8 +66,8 @@ public class WorkoutActivity extends Activity {
 		new PrepareStartupAsyncTask().execute(new Object());
 
 		currentExerciceText = (TextView) findViewById(R.id.textViewCurrentExercise);
-		stopButton = (Button) findViewById(R.id.buttonStop);
-		pauseResumeButton = (ToggleButton) findViewById(R.id.toggleButtonpauseresume);
+		pauseResumeButton = (ImageButton) findViewById(R.id.ImageButtonPlayPause);
+		skipButton = (ImageButton) findViewById(R.id.imageButtonNext);
 		upNextExerciceText = (TextView) findViewById(R.id.textViewUpNextExercise);
 		timeRemainingText = (TextView) findViewById(R.id.textViewTimeLeft);
 
@@ -341,13 +340,11 @@ public class WorkoutActivity extends Activity {
 
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
-		stopButton.setOnClickListener(null);
 		pauseResumeButton.setOnClickListener(null);
 	}
 
 	private void AddHandlers() {
 		// Register the Click handler for the button.
-		stopButton.setOnClickListener(startButtonClickListener);
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
 	}
 
@@ -370,11 +367,11 @@ public class WorkoutActivity extends Activity {
 
 		if (isPaused) {
 			timer.cancel();
+			pauseResumeButton.setImageResource(android.R.drawable.ic_media_play);
 		} else {
 			resumeTimer();
+			pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
 		}
-
-		pauseResumeButton.setChecked(isPaused);
 
 	}
 

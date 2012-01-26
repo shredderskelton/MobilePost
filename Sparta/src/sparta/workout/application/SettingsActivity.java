@@ -21,6 +21,10 @@ public class SettingsActivity extends Activity {
 	Spinner spinRest;
 	Spinner spinExercise;
 
+	String PREF_RESTTIME;
+	String PREF_EXERCISETIME;
+	String PREF_VOICE;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,9 +50,13 @@ public class SettingsActivity extends Activity {
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		int exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
-		int restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
-		String voiceSetting = prefs.getString(getResources().getString(R.string.PREF_VOICE), "Bigby");
+		PREF_RESTTIME = getResources().getString(R.string.PREF_RESTTIME);
+		PREF_EXERCISETIME = getResources().getString(R.string.PREF_EXERCISETIME);
+		PREF_VOICE = getResources().getString(R.string.PREF_VOICE);
+
+		int exerciseSetting = prefs.getInt(PREF_EXERCISETIME, 60);
+		int restSetting = prefs.getInt(PREF_RESTTIME, 15);
+		String voiceSetting = prefs.getString(PREF_VOICE, "Bigby");
 
 		spinRest.setOnItemSelectedListener(new MyOnItemSelectedListener() {
 
