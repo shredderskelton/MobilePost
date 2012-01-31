@@ -1,6 +1,7 @@
 package sparta.workout.application;
 
 import java.io.InputStream;
+import java.util.Random;
 
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.Exercise;
@@ -127,6 +128,7 @@ public class WorkoutActivity extends Activity {
 	}
 
 	private void prepareForWar() {
+		soundManager.PlayATaunt();
 		currentExercise = workout.Routines.pop();
 		resumeTimer();
 	}
@@ -170,6 +172,8 @@ public class WorkoutActivity extends Activity {
 					processTimeRemaining(secsLeft);
 				}
 
+				decideToPlayATaunt(secsLeft);
+
 			}
 
 		}.start();
@@ -177,7 +181,7 @@ public class WorkoutActivity extends Activity {
 
 	private void processTimeRemaining(int secondsLeft) {
 
-		if (!isResting && workout.exerciseHalfway == secondsLeft) {
+		if (!isResting && workout.getHalfway() == secondsLeft) {
 			soundManager.playResourceInSoundPool(R.raw.control_halfway, 1);
 			return;
 		}
@@ -198,6 +202,7 @@ public class WorkoutActivity extends Activity {
 			// mountain climber
 			timeLeft = workout.exerciseInterval * 1000;
 		} else {
+			tauntedThisExercise = false;
 			currentExercise = workout.Routines.pop();
 			// you just finished exercising
 			soundManager.AnnounceNextExercise(currentExercise, workout.restInterval);
@@ -340,6 +345,33 @@ public class WorkoutActivity extends Activity {
 		}
 
 		return null;
+	}
+
+	Boolean tauntedThisExercise = false;
+
+	private void decideToPlayATaunt(int secondsLeft) {
+		if (!tauntedThisExercise) {
+			if (!isResting) {
+				// play in the last half of the exercise
+				if (secondsLeft < workout.getHalfway() - 2) {
+
+					// Dont play when the countdown is on
+					if (secondsLeft > 13) {
+
+						Random rand = new Random();
+						int i = rand.nextInt(100);
+
+						// play 30% of the time
+						if (i < 30) {
+							soundManager.PlayATaunt();
+							tauntedThisExercise = true;
+						}
+					}
+
+				}
+			}
+		}
+
 	}
 
 }
