@@ -42,7 +42,7 @@ public class WorkoutActivity extends Activity {
 	long timeLeft = 10000;
 
 	Workout workout;
-
+	Exercise currentExercise;
 	Boolean isResting = true;
 	Boolean isPaused = false;
 
@@ -118,12 +118,17 @@ public class WorkoutActivity extends Activity {
 		protected void onPostExecute(Void result) {
 
 			AddHandlers();
-			resumeTimer();
+			prepareForWar();
 			startupProgressDialog.dismiss();
 
 			super.onPostExecute(result);
 
 		}
+	}
+
+	private void prepareForWar() {
+		currentExercise = workout.Routines.pop();
+		resumeTimer();
 	}
 
 	private void resumeTimer() {
@@ -135,8 +140,7 @@ public class WorkoutActivity extends Activity {
 		} else {
 
 			if (isResting) {
-				Exercise nextUp = workout.Routines.pop();
-				nextUpStr = nextUp.Name;
+				nextUpStr = currentExercise.Name;
 			} else {
 				nextUpStr = "Rest";
 			}
@@ -188,15 +192,15 @@ public class WorkoutActivity extends Activity {
 	}
 
 	private void nextExercise() {
-
 		if (isResting) {
 			// you just finished resting
-			soundManager.playResourceInSoundPool(R.raw.taunt_persaincowards, 1);
+			soundManager.AnnounceCurrentExercise(currentExercise);
 			// mountain climber
 			timeLeft = workout.exerciseInterval * 1000;
 		} else {
+			currentExercise = workout.Routines.pop();
 			// you just finished exercising
-			soundManager.AnnounceNextExercise(workout);
+			soundManager.AnnounceNextExercise(currentExercise, workout.restInterval);
 			timeLeft = workout.restInterval * 1000;
 		}
 		isResting = !isResting;

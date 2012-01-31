@@ -1,11 +1,12 @@
 package sparta.workout.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import sparta.workout.application.R;
 import sparta.workout.models.Exercise;
 import sparta.workout.models.SoundResource;
-import sparta.workout.models.Workout;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -21,6 +22,8 @@ public class SoundManager {
 
 	Boolean initialised = false;
 
+	ArrayList<Integer> tauntPlaylist;
+
 	public SoundManager() {
 	}
 
@@ -34,6 +37,7 @@ public class SoundManager {
 		soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 		soundIdToSoundResourceMap = new HashMap();
 
+		loadUpASample(R.raw.control_bell, SOUND_STREAM_ONE);
 		loadUpASample(R.raw.control_halfway, SOUND_STREAM_ONE);
 		loadUpASample(R.raw.control_restfor, SOUND_STREAM_ONE);
 		loadUpASample(R.raw.control_seconds, SOUND_STREAM_ONE);
@@ -55,18 +59,9 @@ public class SoundManager {
 		loadUpASample(R.raw.countdown_twenty, SOUND_STREAM_ONE);
 		loadUpASample(R.raw.countdown_three, SOUND_STREAM_ONE);
 		loadUpASample(R.raw.countdown_thirty, SOUND_STREAM_ONE);
-		/*
-		 * loadUpASample(R.raw.taunt_athenian, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_deathitshallbe, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_diebyyourside, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_dineinhell, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_endsinclimax, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_gladiatorspeech, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_immortals, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_neverretreat, SOUND_STREAM_ONE);
-		 * loadUpASample(R.raw.taunt_onyourshield, SOUND_STREAM_ONE);
-		 */
-		loadUpASample(R.raw.taunt_persaincowards, SOUND_STREAM_ONE);
+
+		fillTaunts();
+		loadUpATaunt();
 
 		loadUpASample(R.raw.exercise_dumbbellpushpress, SOUND_STREAM_ONE);
 		loadUpASample(R.raw.exercise_dumbbellrow, SOUND_STREAM_ONE);
@@ -80,6 +75,21 @@ public class SoundManager {
 		loadUpASample(R.raw.exercise_tpushup, SOUND_STREAM_ONE);
 
 		initialised = true;
+	}
+
+	private void fillTaunts() {
+		tauntPlaylist = new ArrayList<Integer>();
+
+		tauntPlaylist.add(R.raw.taunt_athenian);
+		tauntPlaylist.add(R.raw.taunt_deathitshallbe);
+		tauntPlaylist.add(R.raw.taunt_diebyyourside);
+		tauntPlaylist.add(R.raw.taunt_dineinhell);
+		tauntPlaylist.add(R.raw.taunt_endsinclimax);
+		tauntPlaylist.add(R.raw.taunt_gladiatorspeech);
+		tauntPlaylist.add(R.raw.taunt_immortals);
+		tauntPlaylist.add(R.raw.taunt_neverretreat);
+		tauntPlaylist.add(R.raw.taunt_onyourshield);
+		tauntPlaylist.add(R.raw.taunt_persaincowards);
 	}
 
 	public void playResourceInSoundPool(int resId, int priority) {
@@ -161,14 +171,24 @@ public class SoundManager {
 
 	}
 
-	public void AnnounceNextExercise(Workout workout) {
-		int rawSoundId = SoundResource.GetNumberSound(workout.restInterval);
+	private void unloadASample(int resId) {
+
+		if (soundIdToSoundResourceMap.containsKey(resId)) {
+
+			soundPool.unload(soundIdToSoundResourceMap.get(resId).soundPoolHandle);
+
+			soundIdToSoundResourceMap.remove(resId);
+
+		}
+	}
+
+	public void AnnounceNextExercise(Exercise e, int restInterval) {
+		int rawSoundId = SoundResource.GetNumberSound(restInterval);
 
 		SoundResource restfor = soundIdToSoundResourceMap.get(R.raw.control_restfor);
 		SoundResource n = soundIdToSoundResourceMap.get(rawSoundId);
 		SoundResource secs = soundIdToSoundResourceMap.get(R.raw.control_seconds);
 
-		Exercise e = workout.Routines.peek();
 		if (e != null) {
 			int rawExerciseSoundId = SoundResource.GetExerciseSound(e.soundResourceName);
 			SoundResource upnext = soundIdToSoundResourceMap.get(R.raw.control_upnext);
@@ -179,7 +199,41 @@ public class SoundManager {
 		}
 	}
 
+	public void AnnounceCurrentExercise(Exercise exercise) {
+
+		if (exercise != null) {
+			int rawExerciseSoundId = SoundResource.GetExerciseSound(exercise.soundResourceName);
+			SoundResource ne = soundIdToSoundResourceMap.get(rawExerciseSoundId);
+			new PlaySoundQueueAsyncTask().execute(soundIdToSoundResourceMap.get(R.raw.control_bell), ne);
+		}
+	}
+
+	int loadedTaunt = 0;
+
 	public void PlayATaunt() {
+
+		playResourceInSoundPool(loadedTaunt, 1);
+
+		loadUpATaunt();
+	}
+
+	private void loadUpATaunt() {
+
+		unloadASample(loadedTaunt);
+
+		if (tauntPlaylist.isEmpty())
+			fillTaunts();
+
+		int i = 0;
+
+		if (tauntPlaylist.size() > 1) {
+			Random rand = new Random();
+			i = rand.nextInt(tauntPlaylist.size() - 1);
+		}
+
+		loadedTaunt = tauntPlaylist.remove(i);
+
+		loadUpASample(loadedTaunt, SOUND_STREAM_ONE);
 
 	}
 
