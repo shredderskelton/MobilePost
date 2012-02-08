@@ -6,13 +6,14 @@ import java.util.Random;
 
 import sparta.workout.application.R;
 import sparta.workout.models.Exercise;
+import sparta.workout.models.IWorkoutListener;
 import sparta.workout.models.SoundResource;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.AsyncTask;
 
-public class SoundManager {
+public class SoundManager implements IWorkoutListener {
 
 	SoundPool soundPool;
 	AudioManager audioManager;
@@ -255,6 +256,68 @@ public class SoundManager {
 
 			return null;
 		}
+
+	}
+
+	private void processTimeRemaining(int secondsLeft) {
+
+		playNumber(secondsLeft);
+	}
+
+	public void destroy() {
+		soundPool.release();
+		soundPool = null;
+	}
+
+	// listener events
+	@Override
+	public void onTick(int secondsLeft, Boolean isResting) {
+
+		if (isResting && secondsLeft > 5)
+			return;
+		else
+			processTimeRemaining(secondsLeft);
+
+	}
+
+	@Override
+	public void onWorkoutFinished() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onWorkoutStarted() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onWorkoutPaused() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onExerciseStarted(Exercise exercise) {
+		AnnounceCurrentExercise(exercise);
+	}
+
+	@Override
+	public void onHalfwayThroughExercise() {
+		playResourceInSoundPool(R.raw.control_halfway, 1);
+	}
+
+	@Override
+	public void onPlayATaunt() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRestStarted(Exercise upNext, int restInterval) {
+
+		AnnounceNextExercise(upNext, restInterval);
 
 	}
 

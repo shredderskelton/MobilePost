@@ -1,10 +1,10 @@
 package sparta.workout.application;
 
 import java.io.InputStream;
-import java.util.Random;
 
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.Exercise;
+import sparta.workout.models.IWorkoutListener;
 import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,7 +16,6 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,7 +24,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class WorkoutActivity extends Activity {
+public class WorkoutActivity extends Activity implements IWorkoutListener {
 
 	TextView currentExerciceText;
 	ImageButton pauseResumeButton;
@@ -38,16 +37,12 @@ public class WorkoutActivity extends Activity {
 
 	Intent intent;
 
-	CountDownTimer timer;
+	SoundManager soundManager;
 
 	long timeLeft = 10000;
 
 	Workout workout;
 	Exercise currentExercise;
-	Boolean isResting = true;
-	Boolean isPaused = false;
-
-	SoundManager soundManager;
 
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
@@ -65,7 +60,9 @@ public class WorkoutActivity extends Activity {
 		startupProgressDialog.setMessage("Preparing for WAR!");
 		startupProgressDialog.setCancelable(false);
 		startupProgressDialog.show();
+
 		soundManager = new SoundManager((AudioManager) this.getSystemService(AUDIO_SERVICE), (Context) this);
+		workout = new Workout(this, soundManager);
 
 		new PrepareStartupAsyncTask().execute(new Object());
 
@@ -104,7 +101,7 @@ public class WorkoutActivity extends Activity {
 
 			// initSoundPool();
 			soundManager.Initialise();
-			workout = getNormalWorkout();
+			initialiseWorkout();
 
 			int exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
 			int restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
@@ -128,94 +125,16 @@ public class WorkoutActivity extends Activity {
 	}
 
 	private void prepareForWar() {
+
 		soundManager.PlayATaunt();
-		currentExercise = workout.Routines.pop();
-		resumeTimer();
-	}
-
-	private void resumeTimer() {
-
-		String nextUpStr;
-
-		if (workout.Routines.isEmpty()) {
-			nextUpStr = "Finish";
-		} else {
-
-			if (isResting) {
-				nextUpStr = currentExercise.Name;
-			} else {
-				nextUpStr = "Rest";
-			}
-		}
-		upNextExerciceText.setText(nextUpStr);
-
-		timer = new CountDownTimer(timeLeft, 1000) {
-
-			@Override
-			public void onFinish() {
-
-				nextExercise();
-			}
-
-			@Override
-			public void onTick(long msLeft) {
-				timeLeft = msLeft;
-
-				timeRemainingText.setText("" + msLeft / 1000);
-				timeRemainingButton.setText("" + msLeft / 1000);
-
-				int secsLeft = (int) (msLeft / 1000);
-
-				// Only countdown from 5 in rest mode
-				if (isResting && secsLeft > 5) {
-				} else {
-					processTimeRemaining(secsLeft);
-				}
-
-				decideToPlayATaunt(secsLeft);
-
-			}
-
-		}.start();
-	}
-
-	private void processTimeRemaining(int secondsLeft) {
-
-		if (!isResting && workout.getHalfway() == secondsLeft) {
-			soundManager.playResourceInSoundPool(R.raw.control_halfway, 1);
-			return;
-		}
-
-		soundManager.playNumber(secondsLeft);
+		currentExercise = workout.getCurrentExercise();
+		workout.restartWorkout();
 	}
 
 	private void AllDone() {
 		// TODO Auto-generated method stub
 		currentExerciceText.setText("All Done");
 		upNextExerciceText.setText("");
-	}
-
-	private void nextExercise() {
-		if (isResting) {
-			// you just finished resting
-			soundManager.AnnounceCurrentExercise(currentExercise);
-			// mountain climber
-			timeLeft = workout.exerciseInterval * 1000;
-		} else {
-			tauntedThisExercise = false;
-			currentExercise = workout.Routines.pop();
-			// you just finished exercising
-			soundManager.AnnounceNextExercise(currentExercise, workout.restInterval);
-			timeLeft = workout.restInterval * 1000;
-		}
-		isResting = !isResting;
-
-		currentExerciceText.setText(upNextExerciceText.getText());
-
-		if (currentExerciceText.getText() == "Finish")
-			AllDone();
-		else
-			resumeTimer();
 	}
 
 	private void RemoveHandlers() {
@@ -249,27 +168,27 @@ public class WorkoutActivity extends Activity {
 	};
 	private View.OnClickListener pauseresumeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			togglePauseWorkout();
+			if (workout.getIsPaused())
+				resumeWorkout();
+			else
+				pauseWorkout();
 		}
 
 	};
 
-	private void togglePauseWorkout() {
-		isPaused = !isPaused;
+	private void pauseWorkout() {
+		workout.pauseWorkout();
+		pauseResumeButton.setImageResource(android.R.drawable.ic_media_play);
+	}
 
-		if (isPaused) {
-			timer.cancel();
-			pauseResumeButton.setImageResource(android.R.drawable.ic_media_play);
-		} else {
-			resumeTimer();
-			pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
-		}
-
+	private void resumeWorkout() {
+		workout.resumeWorkout();
+		pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
 	}
 
 	private void confirmStopWorkout() {
 
-		togglePauseWorkout();
+		pauseWorkout();
 		String message = "Are you sure you want to cancel the workout?";
 		String title = "Leave Sparta with your tail between your legs?";
 		String yes = "I am a pussy";
@@ -285,7 +204,7 @@ public class WorkoutActivity extends Activity {
 			}
 		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				togglePauseWorkout();
+				resumeWorkout();
 				dialog.cancel();
 			}
 		});
@@ -299,32 +218,29 @@ public class WorkoutActivity extends Activity {
 		RemoveHandlers();
 		intent = null;
 
-		if (timer != null)
-			timer.cancel();
+		soundManager.destroy();
+		workout.destroy();
 
 	};
 
 	private void navigateBacktomain() {
+		onDestroy();
 		intent = new Intent(this, SpartaActivity.class);
 		startActivity(intent);
 	}
 
-	public final Workout getNormalWorkout() {
+	public void initialiseWorkout() {
 
-		Workout regular = new Workout();
-
-		regular.Routines.push(fromJson(R.raw.json_goblet));
-		regular.Routines.push(fromJson(R.raw.json_mountainclimber));
-		regular.Routines.push(fromJson(R.raw.json_singlearmswing));
-		regular.Routines.push(fromJson(R.raw.json_tpushup));
-		regular.Routines.push(fromJson(R.raw.json_splitjump));
-		regular.Routines.push(fromJson(R.raw.json_dumbellrow));
-		regular.Routines.push(fromJson(R.raw.json_sidelunge));
-		regular.Routines.push(fromJson(R.raw.json_pushuppositionrow));
-		regular.Routines.push(fromJson(R.raw.json_dumbbelllungerotation));
-		regular.Routines.push(fromJson(R.raw.json_dumbbellpushpress));
-
-		return regular;
+		workout.addExercise(fromJson(R.raw.json_goblet));
+		workout.addExercise(fromJson(R.raw.json_mountainclimber));
+		workout.addExercise(fromJson(R.raw.json_singlearmswing));
+		workout.addExercise(fromJson(R.raw.json_tpushup));
+		workout.addExercise(fromJson(R.raw.json_splitjump));
+		workout.addExercise(fromJson(R.raw.json_dumbellrow));
+		workout.addExercise(fromJson(R.raw.json_sidelunge));
+		workout.addExercise(fromJson(R.raw.json_pushuppositionrow));
+		workout.addExercise(fromJson(R.raw.json_dumbbelllungerotation));
+		workout.addExercise(fromJson(R.raw.json_dumbbellpushpress));
 
 	}
 
@@ -347,30 +263,75 @@ public class WorkoutActivity extends Activity {
 		return null;
 	}
 
-	Boolean tauntedThisExercise = false;
+	@Override
+	public void onTick(int secondsLeft, Boolean isResting) {
 
-	private void decideToPlayATaunt(int secondsLeft) {
-		if (!tauntedThisExercise) {
-			if (!isResting) {
-				// play in the last half of the exercise
-				if (secondsLeft < workout.getHalfway() - 2) {
+		final int n = secondsLeft;
 
-					// Dont play when the countdown is on
-					if (secondsLeft > 13) {
+		timeRemainingButton.post(new Runnable() {
+			public void run() {
 
-						Random rand = new Random();
-						int i = rand.nextInt(100);
+				// update the time remaining text box
+				timeRemainingButton.setText("" + n);
+				timeRemainingText.setText("" + n);
 
-						// play 30% of the time
-						if (i < 30) {
-							soundManager.PlayATaunt();
-							tauntedThisExercise = true;
-						}
-					}
-
-				}
 			}
-		}
+		});
+
+	}
+
+	@Override
+	public void onWorkoutFinished() {
+		AllDone();
+	}
+
+	@Override
+	public void onWorkoutStarted() {
+
+	}
+
+	@Override
+	public void onWorkoutPaused() {
+
+	}
+
+	@Override
+	public void onExerciseStarted(Exercise exercise) {
+		// update the current exercise label
+		// update the next exercise label
+		// soundManager.AnnounceCurrentExercise(workout.getCurrentExercise());
+		// // mountain
+
+		// soundManager.AnnounceNextExercise(currentExercise,
+		// workout.restInterval);
+
+		final String name = exercise.Name;
+
+		currentExerciceText.post(new Runnable() {
+			public void run() {
+
+				currentExerciceText.setText(name);
+				upNextExerciceText.setText("Rest");
+			}
+		});
+
+	}
+
+	public void onRestStarted(Exercise upNext, int restFor) {
+		currentExerciceText.setText("Rest");
+		upNextExerciceText.setText(upNext.Name);
+
+	}
+
+	@Override
+	public void onHalfwayThroughExercise() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPlayATaunt() {
+		// TODO Auto-generated method stub
 
 	}
 
