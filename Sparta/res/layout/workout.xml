@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
         android:text="@string/currentExerciseLabel"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -41,7 +40,6 @@
         android:layout_alignBottom="@+id/buttonTimeLeft"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/buttonTimeLeft"
-        android:layout_marginLeft="16dp"
         android:layout_toLeftOf="@+id/buttonTimeLeft"
         android:text="Goblet Squat"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -106,7 +104,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/ImageButtonPlayPause"
-        android:layout_marginLeft="16dp"
         android:text="@string/newExerciseLabel"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -116,9 +113,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/TextViewUpNextExerciceLabel"
-        android:layout_marginBottom="56dp"
-        android:layout_marginLeft="16dp"
         android:text="Mountain Climber"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ProgressBar
+        android:id="@+id/progressBarWorkout"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/progressBarLabel"
+        android:layout_below="@+id/textViewUpNextExercise" />
 
 </RelativeLayout>

@@ -49,6 +49,35 @@ public class Workout {
 		return isPaused;
 	}
 
+	public int getProgressTotal() {
+		int ex = 0;
+		int rest = 0;
+
+		ex = Routines.size() * exerciseInterval;
+		rest = Routines.size() * restInterval - restInterval;
+
+		return ex + rest;
+
+	}
+
+	public int getProgressActual() {
+
+		int actual = 0;
+
+		int timeLeftSecs = 0;
+
+		if (!isResting) {
+			timeLeftSecs = (int) (exerciseInterval - (timeLeft / 1000));
+			actual = (int) (timeLeftSecs + (restInterval + exerciseInterval) * currentExercise);
+		} else {
+			timeLeftSecs = (int) (restInterval - (timeLeft / 1000));
+			actual = (int) (timeLeftSecs + (exerciseInterval * (currentExercise + 1)) + (restInterval * (currentExercise)));
+		}
+		Log.d("PROG", "TimeLeft = " + timeLeftSecs + ". Current Ex = " + currentExercise + "Resting = " + isResting + ". Actual = " + actual);
+
+		return actual;
+	}
+
 	// Exercises
 	public void addExercise(Exercise e) {
 		Routines.add(e);

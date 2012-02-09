@@ -26,7 +26,9 @@ public final class R {
         public static final int buttonTimeLeft=0x7f080008;
         public static final int imageButtonNext=0x7f08000e;
         public static final int infoToggleButton=0x7f080007;
-        public static final int settings_menu=0x7f080011;
+        public static final int progressBarLabel=0x7f080012;
+        public static final int progressBarWorkout=0x7f080011;
+        public static final int settings_menu=0x7f080013;
         public static final int spinnerExerciseInterval=0x7f080004;
         public static final int spinnerRestInterval=0x7f080005;
         public static final int spinnerSound=0x7f080003;

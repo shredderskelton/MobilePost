@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class WorkoutActivity extends Activity implements IWorkoutListener {
@@ -36,6 +37,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	TextView currentExerciseDetails;
 	ImageButton exerciseInfoButton;
 	TextView exerciseDetails;
+	ProgressBar progressBar;
+
 	Intent intent;
 
 	SoundManager soundManager;
@@ -77,6 +80,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
 		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
 		exerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
+		progressBar = (ProgressBar) findViewById(R.id.progressBarWorkout);
+
 		timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
 		currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
 
@@ -105,8 +110,15 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			soundManager.Initialise();
 			initialiseWorkout();
 
-			int exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
-			int restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
+			int exerciseSetting = 60;
+			int restSetting = 15;
+
+			try {
+				restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
+				exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
+			} catch (Exception ex) {
+				Log.d("ERROR", "WTF: " + ex.getMessage());
+			}
 
 			workout.restInterval = restSetting;
 			workout.exerciseInterval = exerciseSetting;
@@ -309,9 +321,14 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 				timeRemainingButton.setText("" + n);
 				timeRemainingText.setText("" + n);
 
+				int prog = workout.getProgressActual();
+
+				progressBar.setProgress(prog);
+
+				Log.d("TEST", "Actual " + prog);
+
 			}
 		});
-
 	}
 
 	@Override
@@ -321,6 +338,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 
 	@Override
 	public void onWorkoutStarted() {
+
+		int max = workout.getProgressTotal();
+		progressBar.setMax(max);
+		Log.d("PROG", "Max = " + max);
 
 		Exercise ex = workout.getCurrentExercise();
 		String t = "";
@@ -344,13 +365,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 
 	@Override
 	public void onExerciseStarted(Exercise exercise) {
-		// update the current exercise label
-		// update the next exercise label
-		// soundManager.AnnounceCurrentExercise(workout.getCurrentExercise());
-		// // mountain
-
-		// soundManager.AnnounceNextExercise(currentExercise,
-		// workout.restInterval);
 
 		String details = "";
 		for (int i = 0; i < exercise.directions.length; i++) {
