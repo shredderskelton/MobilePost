@@ -29,12 +29,13 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	TextView currentExerciceText;
 	ImageButton pauseResumeButton;
 	ImageButton skipButton;
+	ImageButton previousButton;
 	TextView upNextExerciceText;
 	TextView timeRemainingText;
 	Button timeRemainingButton;
 	TextView currentExerciseDetails;
 	ImageButton exerciseInfoButton;
-
+	TextView exerciseDetails;
 	Intent intent;
 
 	SoundManager soundManager;
@@ -69,12 +70,13 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExerciceText = (TextView) findViewById(R.id.textViewCurrentExercise);
 		pauseResumeButton = (ImageButton) findViewById(R.id.ImageButtonPlayPause);
 		skipButton = (ImageButton) findViewById(R.id.imageButtonNext);
+		previousButton = (ImageButton) findViewById(R.id.ImageButtonPrevious);
 		upNextExerciceText = (TextView) findViewById(R.id.textViewUpNextExercise);
 		timeRemainingText = (TextView) findViewById(R.id.textViewTimeLeft);
 		timeRemainingButton = (Button) findViewById(R.id.buttonTimeLeft);
 		currentExerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
 		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
-
+		exerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
 		timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
 		currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
 
@@ -135,6 +137,20 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		// TODO Auto-generated method stub
 		currentExerciceText.setText("All Done");
 		upNextExerciceText.setText("");
+		String message = "It's an honour to die by your side";
+		String yes = "I rock!";
+		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+		builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+
+				navigateBacktomain();
+
+				dialog.dismiss();
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 
 	private void RemoveHandlers() {
@@ -142,6 +158,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		timeRemainingButton.setOnClickListener(null);
 		exerciseInfoButton.setOnClickListener(null);
 		pauseResumeButton.setOnClickListener(null);
+		previousButton.setOnClickListener(null);
+		skipButton.setOnClickListener(null);
 	}
 
 	private void AddHandlers() {
@@ -149,6 +167,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		timeRemainingButton.setOnClickListener(timeRemainingButtonClickListener);
 		exerciseInfoButton.setOnClickListener(exerciseInfoButtonClickListener);
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
+		previousButton.setOnClickListener(previousButtonClickListener);
+		skipButton.setOnClickListener(skipButtonClickListener);
 	}
 
 	/** Event listeners */
@@ -172,6 +192,20 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 				resumeWorkout();
 			else
 				pauseWorkout();
+		}
+
+	};
+	private View.OnClickListener skipButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+
+			workout.moveToNextExercise();
+		}
+
+	};
+	private View.OnClickListener previousButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+
+			workout.moveToPreviousExercise();
 		}
 
 	};
@@ -306,10 +340,16 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		// workout.restInterval);
 
 		final String name = exercise.Name;
+		final String det;
+		String details = "";
+		for (int i = 0; i < exercise.directions.length; i++) {
+			details += exercise.directions[i] + "\n";
+		}
+		det = details;
 
 		currentExerciceText.post(new Runnable() {
 			public void run() {
-
+				exerciseDetails.setText(det);
 				currentExerciceText.setText(name);
 				upNextExerciceText.setText("Rest");
 			}

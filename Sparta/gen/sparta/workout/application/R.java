@@ -19,23 +19,24 @@ public final class R {
         public static final int thisissparta=0x7f020001;
     }
     public static final class id {
-        public static final int ImageButtonPlayPause=0x7f08000e;
-        public static final int TextViewUpNextExerciceLabel=0x7f08000d;
+        public static final int ImageButtonPlayPause=0x7f08000d;
+        public static final int ImageButtonPrevious=0x7f08000c;
+        public static final int TextViewUpNextExerciceLabel=0x7f08000f;
         public static final int buttonStart=0x7f080001;
-        public static final int buttonTimeLeft=0x7f080009;
-        public static final int imageButtonNext=0x7f08000f;
-        public static final int infoToggleButton=0x7f080008;
-        public static final int settings_menu=0x7f080010;
+        public static final int buttonTimeLeft=0x7f080008;
+        public static final int imageButtonNext=0x7f08000e;
+        public static final int infoToggleButton=0x7f080007;
+        public static final int settings_menu=0x7f080011;
         public static final int spinnerExerciseInterval=0x7f080004;
         public static final int spinnerRestInterval=0x7f080005;
         public static final int spinnerSound=0x7f080003;
         public static final int textView1=0x7f080000;
         public static final int textView2=0x7f080002;
-        public static final int textViewCurrentExercise=0x7f08000a;
-        public static final int textViewCurrentExerciseLabel=0x7f080007;
-        public static final int textViewExerciseDetails=0x7f08000c;
-        public static final int textViewTimeLeft=0x7f08000b;
-        public static final int textViewUpNextExercise=0x7f080006;
+        public static final int textViewCurrentExercise=0x7f080009;
+        public static final int textViewCurrentExerciseLabel=0x7f080006;
+        public static final int textViewExerciseDetails=0x7f08000b;
+        public static final int textViewTimeLeft=0x7f08000a;
+        public static final int textViewUpNextExercise=0x7f080010;
     }
     public static final class layout {
         public static final int main=0x7f030000;

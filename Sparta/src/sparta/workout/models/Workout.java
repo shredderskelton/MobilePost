@@ -87,7 +87,7 @@ public class Workout {
 		}
 	}
 
-	private void moveToNextExercise() {
+	public void moveToNextExercise() {
 
 		if (Routines.size() > 0) {
 			if (currentExerciseIsLastExercise()) {
@@ -104,7 +104,7 @@ public class Workout {
 		}
 	}
 
-	private void moveToPreviousExercise() {
+	public void moveToPreviousExercise() {
 
 		if (Routines.size() > 0) {
 			if (currentExerciseIsFirstExercise()) {
@@ -140,8 +140,7 @@ public class Workout {
 		currentExercise = 0;
 		listenerb.onWorkoutStarted();
 		listener.onWorkoutStarted();
-		raiseOnExerciseStarted();
-		restartTimer(exerciseInterval * 1000);
+		moveToResting();
 	}
 
 	public void pauseWorkout() {
