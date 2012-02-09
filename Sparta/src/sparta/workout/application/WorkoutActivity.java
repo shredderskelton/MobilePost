@@ -322,6 +322,19 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	@Override
 	public void onWorkoutStarted() {
 
+		Exercise ex = workout.getCurrentExercise();
+		String t = "";
+		if (ex != null)
+			t = ex.Name;
+		final String firstExerciseName = t;
+
+		currentExerciceText.post(new Runnable() {
+			public void run() {
+				exerciseDetails.setText("Prepare for war!");
+				currentExerciceText.setText("Ready yourself men!");
+				upNextExerciceText.setText(firstExerciseName);
+			}
+		});
 	}
 
 	@Override
@@ -339,27 +352,44 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		// soundManager.AnnounceNextExercise(currentExercise,
 		// workout.restInterval);
 
-		final String name = exercise.Name;
-		final String det;
 		String details = "";
 		for (int i = 0; i < exercise.directions.length; i++) {
 			details += exercise.directions[i] + "\n";
 		}
+
+		final String name = exercise.Name;
+		final String det;
+		final String next;
 		det = details;
+
+		String upnext = "";
+		if (workout.currentExerciseIsLastExercise()) {
+			upnext = "FINISH";
+		} else {
+			upnext = workout.getNextExercise().Name;
+		}
+		next = upnext;
 
 		currentExerciceText.post(new Runnable() {
 			public void run() {
 				exerciseDetails.setText(det);
 				currentExerciceText.setText(name);
-				upNextExerciceText.setText("Rest");
+				upNextExerciceText.setText(next);
 			}
 		});
 
 	}
 
 	public void onRestStarted(Exercise upNext, int restFor) {
+
+		String details = "";
+		for (int i = 0; i < upNext.directions.length; i++) {
+			details += upNext.directions[i] + "\n";
+		}
+
 		currentExerciceText.setText("Rest");
 		upNextExerciceText.setText(upNext.Name);
+		exerciseDetails.setText(details);
 
 	}
 

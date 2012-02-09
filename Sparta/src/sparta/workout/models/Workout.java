@@ -6,6 +6,7 @@ import java.util.Random;
 
 import sparta.workout.comparators.ExerciseOrderComparator;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 public class Workout {
 
@@ -23,7 +24,7 @@ public class Workout {
 	Boolean isResting = true;
 	Boolean isPaused = false;
 	Boolean tauntedThisExercise = false;
-
+	Boolean isAtStart = true;
 	// Timer
 	CountDownTimer timer;
 	long timeLeft;
@@ -91,12 +92,17 @@ public class Workout {
 
 		if (Routines.size() > 0) {
 			if (currentExerciseIsLastExercise()) {
-				listenerb.onWorkoutFinished();
-				listener.onWorkoutFinished();
+				raiseWorkoutFinished();
 			} else {
 				tauntedThisExercise = false;
 				isResting = false;
-				currentExercise++;
+
+				// start flag - off by one
+				if (isAtStart)
+					isAtStart = false;
+				else
+					currentExercise++;
+
 				raiseOnExerciseStarted();
 				restartTimer(exerciseInterval * 1000);
 
@@ -104,17 +110,23 @@ public class Workout {
 		}
 	}
 
+	private void raiseWorkoutFinished() {
+		listenerb.onWorkoutFinished();
+		listener.onWorkoutFinished();
+	}
+
 	public void moveToPreviousExercise() {
 
 		if (Routines.size() > 0) {
-			if (currentExerciseIsFirstExercise()) {
-				restartWorkout();
-			} else {
-				// restart the timer
-				currentExercise--;
-				raiseOnExerciseStarted();
-				restartTimer(exerciseInterval * 1000);
-			}
+
+			// restart the timer
+			Log.d("TEST", "Timeleft = " + timeLeft);
+			if (currentExercise > 0 && timeLeft > exerciseInterval * 1000 - 3000)
+				currentExercise--;// restart current exercise first, then
+									// skip back
+			raiseOnExerciseStarted();
+			restartTimer(exerciseInterval * 1000);
+
 		}
 	}
 
@@ -138,9 +150,13 @@ public class Workout {
 	// Control
 	public void restartWorkout() {
 		currentExercise = 0;
+		isAtStart = true;
 		listenerb.onWorkoutStarted();
 		listener.onWorkoutStarted();
-		moveToResting();
+
+		// move to rest without raising event
+		isResting = true;
+		restartTimer(10 * 1000);// 10 secs to begin
 	}
 
 	public void pauseWorkout() {
@@ -171,10 +187,16 @@ public class Workout {
 
 			@Override
 			public void onFinish() {
-				if (isResting)
-					moveToNextExercise();
-				else
-					moveToResting();
+
+				if (currentExerciseIsLastExercise())
+					raiseWorkoutFinished();
+				else {
+
+					if (isResting)
+						moveToNextExercise();
+					else
+						moveToResting();
+				}
 			}
 
 			@Override
