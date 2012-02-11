@@ -4,8 +4,11 @@ import java.io.InputStream;
 
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.Exercise;
+import sparta.workout.models.IVoiceTheme;
 import sparta.workout.models.IWorkoutListener;
+import sparta.workout.models.VoiceThemeBigby;
 import sparta.workout.models.VoiceThemeNick;
+import sparta.workout.models.VoiceThemeSean;
 import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -51,6 +54,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
+	AudioManager audioMgr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,23 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		startupProgressDialog.setCancelable(false);
 		startupProgressDialog.show();
 
-		soundManager = new SoundManager((AudioManager) this.getSystemService(AUDIO_SERVICE), (Context) this, new VoiceThemeNick());
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		String PREF_VOICE = getResources().getString(R.string.PREF_VOICE);
+
+		String voiceSetting = prefs.getString(PREF_VOICE, "Bigby");
+
+		IVoiceTheme theme;
+
+		if (voiceSetting.matches("Nick")) {
+			theme = new VoiceThemeNick();
+		} else if (voiceSetting.matches("Sean"))
+			theme = new VoiceThemeSean();
+		else
+			theme = new VoiceThemeBigby();
+
+		audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
+		soundManager = new SoundManager(audioMgr, (Context) this, theme);
 		workout = new Workout(this, soundManager);
 
 		new PrepareStartupAsyncTask().execute(new Object());
@@ -86,8 +106,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
 		currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
 
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
 		currentExerciceText.setText("Get ready for war!");
 
 	}
@@ -98,7 +116,14 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			confirmStopWorkout();
 			return true;
 		}
-
+		if (KeyEvent.KEYCODE_VOLUME_UP == event.getKeyCode()) {
+			audioMgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+			return true;
+		}
+		if (KeyEvent.KEYCODE_VOLUME_DOWN == event.getKeyCode()) {
+			audioMgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+			return true;
+		}
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -236,6 +261,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private void confirmStopWorkout() {
 
 		pauseWorkout();
+		soundManager.onQuit();
 		String message = "Are you sure you want to cancel the workout?";
 		String title = "Leave Sparta with your tail between your legs?";
 		String yes = "I am a pussy";

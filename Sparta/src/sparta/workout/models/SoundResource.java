@@ -50,10 +50,10 @@ public class SoundResource {
 
 	}
 
-	public long getDuration(FileDescriptor fd) {
+	public static long getDuration(FileDescriptor fd) {
 
 		MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
-		// metaRetriever.setDataSource(context.getResources().openRawResourceFd(resourceId).getFileDescriptor());
+
 		metaRetriever.setDataSource(fd);
 		String durationStr = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 		return Long.parseLong(durationStr) / 100;

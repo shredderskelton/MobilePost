@@ -64,9 +64,10 @@ public class SoundManager implements IWorkoutListener {
 		for (Integer ii : samples) {
 
 			int resId = theme.getSoundresourceIdFor(ii);
-
+			// Log.d("SOUND", "loading up sample rsource id " + resId);
 			loadUpASample(resId, SOUND_STREAM_ONE);
 		}
+		loadUpASample(R.raw.control_bell, SOUND_STREAM_ONE);
 
 		fillTaunts();
 		loadUpATaunt();
@@ -78,6 +79,9 @@ public class SoundManager implements IWorkoutListener {
 
 		tauntPlaylist = theme.getShortTaunts();
 
+		loadUpASample(theme.getCompletedTaunt(), SOUND_STREAM_ONE);
+		loadUpASample(theme.getOpeningTaunt(), SOUND_STREAM_ONE);
+		loadUpASample(theme.getQuitterTaunt(), SOUND_STREAM_ONE);
 	}
 
 	public void playResourceInSoundPool(int resId, int priority) {
@@ -115,6 +119,8 @@ public class SoundManager implements IWorkoutListener {
 		SoundResource sRes = new SoundResource(resId);
 		sRes.soundPoolHandle = soundPool.load(context, resId, streamId);
 		sRes.duration = sRes.getDuration(context.getResources().openRawResourceFd(resId).getFileDescriptor());
+		// Log.d("SOUND", "duration for" + sRes.resourceId + " = " +
+		// sRes.duration);
 		soundIdToSoundResourceMap.put(resId, sRes);
 
 	}
@@ -155,10 +161,13 @@ public class SoundManager implements IWorkoutListener {
 
 	public void AnnounceCurrentExercise(Exercise exercise) {
 
+		// Log.d("SOUND", "Announcing current exercise: " + exercise.Name);
 		if (exercise != null) {
-			int rawExerciseSoundId = SoundResource.GetExerciseSound(exercise.soundResourceName);
+			int templateSoundId = SoundResource.GetExerciseSound(exercise.soundResourceName);
+			int rawExerciseSoundId = theme.getSoundresourceIdFor(templateSoundId);
 			SoundResource ne = soundIdToSoundResourceMap.get(rawExerciseSoundId);
-			new PlaySoundQueueAsyncTask().execute(soundIdToSoundResourceMap.get(R.raw.control_bell), ne);
+			SoundResource bell = soundIdToSoundResourceMap.get(R.raw.control_bell);
+			new PlaySoundQueueAsyncTask().execute(bell, ne);
 		}
 	}
 
@@ -200,8 +209,7 @@ public class SoundManager implements IWorkoutListener {
 				try {
 					if (s != null) {
 						playResourceInSoundPool(s.resourceId, 1);
-
-						Thread.sleep(s.duration + 200);
+						Thread.sleep(1000);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -210,7 +218,6 @@ public class SoundManager implements IWorkoutListener {
 
 			return null;
 		}
-
 	}
 
 	private void processTimeRemaining(int secondsLeft) {
@@ -227,6 +234,9 @@ public class SoundManager implements IWorkoutListener {
 	@Override
 	public void onTick(int secondsLeft, Boolean isResting) {
 
+		if (secondsLeft > 11)
+			return;
+
 		if (isResting && secondsLeft > 5)
 			return;
 		else
@@ -237,13 +247,14 @@ public class SoundManager implements IWorkoutListener {
 	@Override
 	public void onWorkoutFinished() {
 		// TODO Auto-generated method stub
-
+		int resId = theme.getCompletedTaunt();
+		playResourceInSoundPool(resId, 1);
 	}
 
 	@Override
 	public void onWorkoutStarted() {
-		// TODO Auto-generated method stub
-
+		int resId = theme.getOpeningTaunt();
+		playResourceInSoundPool(resId, 1);
 	}
 
 	@Override
@@ -276,4 +287,8 @@ public class SoundManager implements IWorkoutListener {
 
 	}
 
+	public void onQuit() {
+		int resId = theme.getQuitterTaunt();
+		playResourceInSoundPool(resId, 1);
+	}
 }

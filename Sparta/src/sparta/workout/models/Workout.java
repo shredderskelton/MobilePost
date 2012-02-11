@@ -183,6 +183,9 @@ public class Workout {
 		listenerb.onWorkoutStarted();
 		listener.onWorkoutStarted();
 
+		listener.onPlayATaunt();
+		listenerb.onPlayATaunt();
+
 		// move to rest without raising event
 		isResting = true;
 		restartTimer(10 * 1000);// 10 secs to begin
@@ -268,6 +271,7 @@ public class Workout {
 						// play 30% of the time
 						if (i < 30) {
 							listener.onPlayATaunt();
+							listenerb.onPlayATaunt();
 							// soundManager.PlayATaunt();
 							tauntedThisExercise = true;
 						}
