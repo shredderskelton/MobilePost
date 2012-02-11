@@ -47,16 +47,16 @@
     <TextView
         android:id="@+id/textViewTimeLeft"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textViewCurrentExercise"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:height="220dp"
+        android:gravity="top|center_horizontal"
         android:text="60"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="220dp" />
+        android:textSize="200dp" />
 
     <TextView
         android:id="@+id/textViewExerciseDetails"

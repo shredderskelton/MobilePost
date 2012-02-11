@@ -5,6 +5,7 @@ import java.io.InputStream;
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.Exercise;
 import sparta.workout.models.IWorkoutListener;
+import sparta.workout.models.VoiceThemeNick;
 import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -65,7 +66,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		startupProgressDialog.setCancelable(false);
 		startupProgressDialog.show();
 
-		soundManager = new SoundManager((AudioManager) this.getSystemService(AUDIO_SERVICE), (Context) this);
+		soundManager = new SoundManager((AudioManager) this.getSystemService(AUDIO_SERVICE), (Context) this, new VoiceThemeNick());
 		workout = new Workout(this, soundManager);
 
 		new PrepareStartupAsyncTask().execute(new Object());
@@ -325,8 +326,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 
 				progressBar.setProgress(prog);
 
-				Log.d("TEST", "Actual " + prog);
-
 			}
 		});
 	}
@@ -341,7 +340,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 
 		int max = workout.getProgressTotal();
 		progressBar.setMax(max);
-		Log.d("PROG", "Max = " + max);
 
 		Exercise ex = workout.getCurrentExercise();
 		String t = "";

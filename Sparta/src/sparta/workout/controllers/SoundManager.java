@@ -6,6 +6,7 @@ import java.util.Random;
 
 import sparta.workout.application.R;
 import sparta.workout.models.Exercise;
+import sparta.workout.models.IVoiceTheme;
 import sparta.workout.models.IWorkoutListener;
 import sparta.workout.models.SoundResource;
 import android.content.Context;
@@ -25,12 +26,12 @@ public class SoundManager implements IWorkoutListener {
 
 	ArrayList<Integer> tauntPlaylist;
 
-	public SoundManager() {
-	}
+	IVoiceTheme theme;
 
-	public SoundManager(AudioManager aMgr, Context contexta) {
+	public SoundManager(AudioManager aMgr, Context contexta, IVoiceTheme voice) {
 		audioManager = aMgr;
 		context = contexta;
+		theme = voice;
 	}
 
 	/* SOUND */
@@ -38,59 +39,45 @@ public class SoundManager implements IWorkoutListener {
 		soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 		soundIdToSoundResourceMap = new HashMap();
 
-		loadUpASample(R.raw.control_bell, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_halfway, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_restfor, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_seconds, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.control_upnext, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_eight, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_fifteen, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_five, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_fortyfive, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_four, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_nine, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_ninety, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_one, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_onetwenty, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_seven, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_six, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_sixty, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_ten, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_two, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_twenty, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_three, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.countdown_thirty, SOUND_STREAM_ONE);
+		ArrayList<Integer> samples = new ArrayList<Integer>();
+		int[] a = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30 };
+
+		for (int i = 0; i < a.length; i++) {
+			samples.add(a[i]);
+		}
+
+		samples.add(SoundResource.control_halfway);
+		samples.add(SoundResource.control_restfor);
+		samples.add(SoundResource.control_seconds);
+		samples.add(SoundResource.control_upnext);
+		samples.add(SoundResource.exercise_dumbbelllungeandrotate);
+		samples.add(SoundResource.exercise_tpushup);
+		samples.add(SoundResource.exercise_dumbbellpushpress);
+		samples.add(SoundResource.exercise_dumbbellrow);
+		samples.add(SoundResource.exercise_dumbbellswing);
+		samples.add(SoundResource.exercise_goblet);
+		samples.add(SoundResource.exercise_mountain);
+		samples.add(SoundResource.exercise_pushpositionrow);
+		samples.add(SoundResource.exercise_sidelunge);
+		samples.add(SoundResource.exercise_splitjump);
+
+		for (Integer ii : samples) {
+
+			int resId = theme.getSoundresourceIdFor(ii);
+
+			loadUpASample(resId, SOUND_STREAM_ONE);
+		}
 
 		fillTaunts();
 		loadUpATaunt();
-
-		loadUpASample(R.raw.exercise_dumbbellpushpress, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_dumbbellrow, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_dumbbellswing, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_gobletsquat, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_lungeandrotate, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_mountainclimber, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_pushpositionrow, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_sidelunge, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_splitjump, SOUND_STREAM_ONE);
-		loadUpASample(R.raw.exercise_tpushup, SOUND_STREAM_ONE);
 
 		initialised = true;
 	}
 
 	private void fillTaunts() {
-		tauntPlaylist = new ArrayList<Integer>();
 
-		tauntPlaylist.add(R.raw.taunt_athenian);
-		tauntPlaylist.add(R.raw.taunt_deathitshallbe);
-		tauntPlaylist.add(R.raw.taunt_diebyyourside);
-		tauntPlaylist.add(R.raw.taunt_dineinhell);
-		tauntPlaylist.add(R.raw.taunt_endsinclimax);
-		tauntPlaylist.add(R.raw.taunt_gladiatorspeech);
-		tauntPlaylist.add(R.raw.taunt_immortals);
-		tauntPlaylist.add(R.raw.taunt_neverretreat);
-		tauntPlaylist.add(R.raw.taunt_onyourshield);
-		tauntPlaylist.add(R.raw.taunt_persaincowards);
+		tauntPlaylist = theme.getShortTaunts();
+
 	}
 
 	public void playResourceInSoundPool(int resId, int priority) {
@@ -118,49 +105,9 @@ public class SoundManager implements IWorkoutListener {
 		if (!initialised)
 			throw new RuntimeException("Not initialised", null);
 
-		switch (i) {
+		int resIdFromTheme = theme.getSoundresourceIdFor(i);
+		playResourceInSoundPool(resIdFromTheme, 1);
 
-		case 1: {
-			playResourceInSoundPool(R.raw.countdown_one, 1);
-			break;
-		}
-		case 2: {
-			playResourceInSoundPool(R.raw.countdown_two, 1);
-			break;
-		}
-		case 3: {
-			playResourceInSoundPool(R.raw.countdown_three, 1);
-			break;
-		}
-		case 4: {
-			playResourceInSoundPool(R.raw.countdown_four, 1);
-			break;
-		}
-		case 5: {
-			playResourceInSoundPool(R.raw.countdown_five, 1);
-			break;
-		}
-		case 6: {
-			playResourceInSoundPool(R.raw.countdown_six, 1);
-			break;
-		}
-		case 7: {
-			playResourceInSoundPool(R.raw.countdown_seven, 1);
-			break;
-		}
-		case 8: {
-			playResourceInSoundPool(R.raw.countdown_eight, 1);
-			break;
-		}
-		case 9: {
-			playResourceInSoundPool(R.raw.countdown_nine, 1);
-			break;
-		}
-		case 10: {
-			playResourceInSoundPool(R.raw.countdown_ten, 1);
-			break;
-		}
-		}
 	}
 
 	private void loadUpASample(int resId, int streamId) {
@@ -184,16 +131,22 @@ public class SoundManager implements IWorkoutListener {
 	}
 
 	public void AnnounceNextExercise(Exercise e, int restInterval) {
-		int rawSoundId = SoundResource.GetNumberSound(restInterval);
 
-		SoundResource restfor = soundIdToSoundResourceMap.get(R.raw.control_restfor);
-		SoundResource n = soundIdToSoundResourceMap.get(rawSoundId);
-		SoundResource secs = soundIdToSoundResourceMap.get(R.raw.control_seconds);
+		int residRestfor = theme.getSoundresourceIdFor(SoundResource.control_restfor);
+		int residrestinterval = theme.getSoundresourceIdFor(restInterval);
+		int residSeconds = theme.getSoundresourceIdFor(SoundResource.control_seconds);
+
+		SoundResource restfor = soundIdToSoundResourceMap.get(residRestfor);
+		SoundResource n = soundIdToSoundResourceMap.get(residrestinterval);
+		SoundResource secs = soundIdToSoundResourceMap.get(residSeconds);
 
 		if (e != null) {
-			int rawExerciseSoundId = SoundResource.GetExerciseSound(e.soundResourceName);
-			SoundResource upnext = soundIdToSoundResourceMap.get(R.raw.control_upnext);
+			int rawExerciseSoundId = theme.getSoundresourceIdFor(SoundResource.GetExerciseSound(e.soundResourceName));
+			int residUpNext = theme.getSoundresourceIdFor(SoundResource.control_upnext);
+
+			SoundResource upnext = soundIdToSoundResourceMap.get(residUpNext);
 			SoundResource ne = soundIdToSoundResourceMap.get(rawExerciseSoundId);
+
 			new PlaySoundQueueAsyncTask().execute(restfor, n, secs, upnext, ne);
 		} else {
 			new PlaySoundQueueAsyncTask().execute(restfor, n, secs);
@@ -247,8 +200,9 @@ public class SoundManager implements IWorkoutListener {
 				try {
 					if (s != null) {
 						playResourceInSoundPool(s.resourceId, 1);
+
+						Thread.sleep(s.duration + 200);
 					}
-					Thread.sleep(s.duration + 200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -305,7 +259,8 @@ public class SoundManager implements IWorkoutListener {
 
 	@Override
 	public void onHalfwayThroughExercise() {
-		playResourceInSoundPool(R.raw.control_halfway, 1);
+		int resTheme = theme.getSoundresourceIdFor(SoundResource.control_halfway);
+		playResourceInSoundPool(resTheme, 1);
 	}
 
 	@Override
