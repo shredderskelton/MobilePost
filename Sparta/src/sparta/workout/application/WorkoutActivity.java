@@ -182,7 +182,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExerciceText.setText("All Done");
 		upNextExerciceText.setText("");
 		String message = "It's an honour to die by your side";
-		String yes = "I rock!";
+		String yes = "Ok";
 		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
 		builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
