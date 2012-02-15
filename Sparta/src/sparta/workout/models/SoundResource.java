@@ -3,8 +3,6 @@ package sparta.workout.models;
 import java.io.FileDescriptor;
 import java.util.HashMap;
 
-import android.media.MediaMetadataRetriever;
-
 public class SoundResource {
 
 	public static final int count_onetwenty = 120;
@@ -51,12 +49,15 @@ public class SoundResource {
 	}
 
 	public static long getDuration(FileDescriptor fd) {
-
-		MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
-
-		metaRetriever.setDataSource(fd);
-		String durationStr = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-		return Long.parseLong(durationStr) / 100;
+		/*
+		 * Not Supported until 2.3.3 MediaMetadataRetriever metaRetriever = new
+		 * MediaMetadataRetriever();
+		 * 
+		 * metaRetriever.setDataSource(fd); String durationStr =
+		 * metaRetriever.extractMetadata
+		 * (MediaMetadataRetriever.METADATA_KEY_DURATION);
+		 */
+		return 1000;
 
 	}
 

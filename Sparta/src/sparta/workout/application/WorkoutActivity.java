@@ -17,10 +17,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,7 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class WorkoutActivity extends Activity implements IWorkoutListener {
-
+	
 	TextView currentExerciceText;
 	ImageButton pauseResumeButton;
 	ImageButton skipButton;
@@ -42,55 +44,57 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageButton exerciseInfoButton;
 	TextView exerciseDetails;
 	ProgressBar progressBar;
-
+	
 	Intent intent;
-
+	
 	SoundManager soundManager;
-
+	
 	long timeLeft = 10000;
-
+	
 	Workout workout;
 	Exercise currentExercise;
-
+	
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
 	AudioManager audioMgr;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
+		
 		super.onCreate(savedInstanceState);
-
+		
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
 		setContentView(R.layout.workout);
-
+		
 		startupProgressDialog = new ProgressDialog(this);
-
+		
 		startupProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		startupProgressDialog.setMessage("Preparing for WAR!");
 		startupProgressDialog.setCancelable(false);
 		startupProgressDialog.show();
-
+		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+		
 		String PREF_VOICE = getResources().getString(R.string.PREF_VOICE);
-
+		
 		String voiceSetting = prefs.getString(PREF_VOICE, "Bigby");
-
+		
 		IVoiceTheme theme;
-
+		
 		if (voiceSetting.matches("Nick")) {
 			theme = new VoiceThemeNick();
 		} else if (voiceSetting.matches("Sean"))
 			theme = new VoiceThemeSean();
 		else
 			theme = new VoiceThemeBigby();
-
+		
 		audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 		soundManager = new SoundManager(audioMgr, (Context) this, theme);
 		workout = new Workout(this, soundManager);
-
+		
 		new PrepareStartupAsyncTask().execute(new Object());
-
+		
 		currentExerciceText = (TextView) findViewById(R.id.textViewCurrentExercise);
 		pauseResumeButton = (ImageButton) findViewById(R.id.ImageButtonPlayPause);
 		skipButton = (ImageButton) findViewById(R.id.imageButtonNext);
@@ -102,14 +106,16 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
 		exerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
 		progressBar = (ProgressBar) findViewById(R.id.progressBarWorkout);
-
+		
+		currentExerciseDetails.setMovementMethod(new ScrollingMovementMethod());
+		
 		timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
 		currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
-
+		
 		currentExerciceText.setText("Get ready for war!");
-
+		
 	}
-
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -126,51 +132,51 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
+	
 	public class PrepareStartupAsyncTask extends AsyncTask<Object, Void, Void> {
-
+		
 		@Override
 		protected Void doInBackground(Object... o) {
-
+			
 			// initSoundPool();
 			soundManager.Initialise();
 			initialiseWorkout();
-
+			
 			int exerciseSetting = 60;
 			int restSetting = 15;
-
+			
 			try {
 				restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
 				exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
 			} catch (Exception ex) {
 				Log.d("ERROR", "WTF: " + ex.getMessage());
 			}
-
+			
 			workout.restInterval = restSetting;
 			workout.exerciseInterval = exerciseSetting;
-
+			
 			return null;
 		}
-
+		
 		@Override
 		protected void onPostExecute(Void result) {
-
+			
 			AddHandlers();
 			prepareForWar();
 			startupProgressDialog.dismiss();
-
+			
 			super.onPostExecute(result);
-
+			
 		}
 	}
-
+	
 	private void prepareForWar() {
-
+		
 		soundManager.PlayATaunt();
 		currentExercise = workout.getCurrentExercise();
 		workout.restartWorkout();
 	}
-
+	
 	private void AllDone() {
 		// TODO Auto-generated method stub
 		currentExerciceText.setText("All Done");
@@ -180,17 +186,17 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
 		builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-
+				
 				navigateBacktomain();
-
+				
 				dialog.dismiss();
-
+				
 			}
 		});
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
-
+	
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
 		timeRemainingButton.setOnClickListener(null);
@@ -199,7 +205,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		previousButton.setOnClickListener(null);
 		skipButton.setOnClickListener(null);
 	}
-
+	
 	private void AddHandlers() {
 		// Register the Click handler for the button.
 		timeRemainingButton.setOnClickListener(timeRemainingButtonClickListener);
@@ -208,21 +214,21 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		previousButton.setOnClickListener(previousButtonClickListener);
 		skipButton.setOnClickListener(skipButtonClickListener);
 	}
-
+	
 	/** Event listeners */
 	private View.OnClickListener timeRemainingButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
 			currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
 		}
-
+		
 	};
 	private View.OnClickListener exerciseInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			timeRemainingText.setVisibility(timeRemainingText.INVISIBLE);
 			currentExerciseDetails.setVisibility(timeRemainingText.VISIBLE);
 		}
-
+		
 	};
 	private View.OnClickListener pauseresumeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
@@ -231,35 +237,35 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			else
 				pauseWorkout();
 		}
-
+		
 	};
 	private View.OnClickListener skipButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-
+			
 			workout.moveToNextExercise();
 		}
-
+		
 	};
 	private View.OnClickListener previousButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-
+			
 			workout.moveToPreviousExercise();
 		}
-
+		
 	};
-
+	
 	private void pauseWorkout() {
 		workout.pauseWorkout();
 		pauseResumeButton.setImageResource(android.R.drawable.ic_media_play);
 	}
-
+	
 	private void resumeWorkout() {
 		workout.resumeWorkout();
 		pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
 	}
-
+	
 	private void confirmStopWorkout() {
-
+		
 		pauseWorkout();
 		soundManager.onQuit();
 		String message = "Are you sure you want to cancel the workout?";
@@ -269,11 +275,11 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
 		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-
+				
 				navigateBacktomain();
-
+				
 				dialog.dismiss();
-
+				
 			}
 		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
@@ -283,27 +289,33 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		});
 		AlertDialog alert = builder.create();
 		alert.show();
-
+		
 	}
-
+	
 	@Override
 	protected void onDestroy() {
+		
 		RemoveHandlers();
 		intent = null;
-
-		soundManager.destroy();
-		workout.destroy();
-
+		if (soundManager != null) {
+			soundManager.destroy();
+			soundManager = null;
+		}
+		if (workout != null) {
+			workout.destroy();
+			workout = null;
+		}
+		
+		super.onDestroy();
 	};
-
+	
 	private void navigateBacktomain() {
 		onDestroy();
-		intent = new Intent(this, SpartaActivity.class);
-		startActivity(intent);
+		finish();
 	}
-
+	
 	public void initialiseWorkout() {
-
+		
 		workout.addExercise(fromJson(R.raw.json_goblet));
 		workout.addExercise(fromJson(R.raw.json_mountainclimber));
 		workout.addExercise(fromJson(R.raw.json_singlearmswing));
@@ -314,65 +326,65 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		workout.addExercise(fromJson(R.raw.json_pushuppositionrow));
 		workout.addExercise(fromJson(R.raw.json_dumbbelllungerotation));
 		workout.addExercise(fromJson(R.raw.json_dumbbellpushpress));
-
+		
 	}
-
+	
 	public Exercise fromJson(int resourceId) {
-
+		
 		try {
 			InputStream is = this.getResources().openRawResource(resourceId);
 			byte[] buffer = new byte[is.available()];
 			while (is.read(buffer) != -1)
 				;
-
+			
 			String jsontext = new String(buffer);
-
+			
 			return new Exercise(jsontext);
-
+			
 		} catch (Exception ex) {
 			Log.e("JSON", "Error opening stream");
 		}
-
+		
 		return null;
 	}
-
+	
 	@Override
 	public void onTick(int secondsLeft, Boolean isResting) {
-
+		
 		final int n = secondsLeft;
-
+		
 		timeRemainingButton.post(new Runnable() {
 			public void run() {
-
+				
 				// update the time remaining text box
 				timeRemainingButton.setText("" + n);
 				timeRemainingText.setText("" + n);
-
+				
 				int prog = workout.getProgressActual();
-
+				
 				progressBar.setProgress(prog);
-
+				
 			}
 		});
 	}
-
+	
 	@Override
 	public void onWorkoutFinished() {
 		AllDone();
 	}
-
+	
 	@Override
 	public void onWorkoutStarted() {
-
+		
 		int max = workout.getProgressTotal();
 		progressBar.setMax(max);
-
+		
 		Exercise ex = workout.getCurrentExercise();
 		String t = "";
 		if (ex != null)
 			t = ex.Name;
 		final String firstExerciseName = t;
-
+		
 		currentExerciceText.post(new Runnable() {
 			public void run() {
 				exerciseDetails.setText("Prepare for war!");
@@ -381,25 +393,25 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			}
 		});
 	}
-
+	
 	@Override
 	public void onWorkoutPaused() {
-
+		
 	}
-
+	
 	@Override
 	public void onExerciseStarted(Exercise exercise) {
-
+		
 		String details = "";
 		for (int i = 0; i < exercise.directions.length; i++) {
 			details += exercise.directions[i] + "\n";
 		}
-
+		
 		final String name = exercise.Name;
 		final String det;
 		final String next;
 		det = details;
-
+		
 		String upnext = "";
 		if (workout.currentExerciseIsLastExercise()) {
 			upnext = "FINISH";
@@ -407,7 +419,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			upnext = workout.getNextExercise().Name;
 		}
 		next = upnext;
-
+		
 		currentExerciceText.post(new Runnable() {
 			public void run() {
 				exerciseDetails.setText(det);
@@ -415,32 +427,32 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 				upNextExerciceText.setText(next);
 			}
 		});
-
+		
 	}
-
+	
 	public void onRestStarted(Exercise upNext, int restFor) {
-
+		
 		String details = "";
 		for (int i = 0; i < upNext.directions.length; i++) {
 			details += upNext.directions[i] + "\n";
 		}
-
+		
 		currentExerciceText.setText("Rest");
 		upNextExerciceText.setText(upNext.Name);
 		exerciseDetails.setText(details);
-
+		
 	}
-
+	
 	@Override
 	public void onHalfwayThroughExercise() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	@Override
 	public void onPlayATaunt() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 }
