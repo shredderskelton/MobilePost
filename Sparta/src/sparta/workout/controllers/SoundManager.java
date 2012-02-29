@@ -118,7 +118,8 @@ public class SoundManager implements IWorkoutListener {
 		
 		SoundResource sRes = new SoundResource(resId);
 		sRes.soundPoolHandle = soundPool.load(context, resId, streamId);
-		sRes.duration = sRes.getDuration(context.getResources().openRawResourceFd(resId).getFileDescriptor());
+		// sRes.duration =
+		// sRes.getDuration(context.getResources().openRawResourceFd(resId).getFileDescriptor());
 		// Log.d("SOUND", "duration for" + sRes.resourceId + " = " +
 		// sRes.duration);
 		soundIdToSoundResourceMap.put(resId, sRes);
@@ -226,7 +227,8 @@ public class SoundManager implements IWorkoutListener {
 	}
 	
 	public void destroy() {
-		soundPool.release();
+		if (soundPool != null)
+			soundPool.release();
 		soundPool = null;
 	}
 	
