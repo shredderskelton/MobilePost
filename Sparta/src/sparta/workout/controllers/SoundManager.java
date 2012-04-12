@@ -32,12 +32,13 @@ public class SoundManager implements IWorkoutListener {
 		audioManager = aMgr;
 		context = contexta;
 		theme = voice;
+		soundIdToSoundResourceMap = new HashMap<Integer, SoundResource>();
 	}
 	
 	/* SOUND */
 	public void Initialise() {
 		soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
-		soundIdToSoundResourceMap = new HashMap();
+		soundIdToSoundResourceMap.clear();
 		
 		ArrayList<Integer> samples = new ArrayList<Integer>();
 		int[] a = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30 };
@@ -248,7 +249,6 @@ public class SoundManager implements IWorkoutListener {
 	
 	@Override
 	public void onWorkoutFinished() {
-		// TODO Auto-generated method stub
 		int resId = theme.getCompletedTaunt();
 		playResourceInSoundPool(resId, 1);
 	}
@@ -261,8 +261,6 @@ public class SoundManager implements IWorkoutListener {
 	
 	@Override
 	public void onWorkoutPaused() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
@@ -278,7 +276,7 @@ public class SoundManager implements IWorkoutListener {
 	
 	@Override
 	public void onPlayATaunt() {
-		// TODO Auto-generated method stub
+		
 		PlayATaunt();
 		
 	}

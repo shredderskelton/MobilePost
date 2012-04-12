@@ -109,8 +109,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		
 		currentExerciseDetails.setMovementMethod(new ScrollingMovementMethod());
 		
-		timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
-		currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
+		timeRemainingText.setVisibility(View.VISIBLE);
+		currentExerciseDetails.setVisibility(View.INVISIBLE);
 		
 		currentExerciceText.setText("Get ready for war!");
 		
@@ -171,14 +171,25 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	private void prepareForWar() {
-		
+		// V1.1 Bug A is coming from here sometimes
+		// using the stack trace to find it - totally shit but what can you do
 		soundManager.PlayATaunt();
+		prepareForWar2();
+		prepareForWar3();
+	}
+	
+	private void prepareForWar2() {
+		// V1.1 Bug A is coming from here sometimes
 		currentExercise = workout.getCurrentExercise();
+	}
+	
+	private void prepareForWar3() {
+		// V1.1 Bug A is coming from here sometimes
 		workout.restartWorkout();
 	}
 	
 	private void AllDone() {
-		// TODO Auto-generated method stub
+		
 		currentExerciceText.setText("All Done");
 		upNextExerciceText.setText("");
 		String message = "It's an honour to die by your side";
@@ -218,15 +229,15 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	/** Event listeners */
 	private View.OnClickListener timeRemainingButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			timeRemainingText.setVisibility(timeRemainingText.VISIBLE);
-			currentExerciseDetails.setVisibility(timeRemainingText.INVISIBLE);
+			timeRemainingText.setVisibility(View.VISIBLE);
+			currentExerciseDetails.setVisibility(View.INVISIBLE);
 		}
 		
 	};
 	private View.OnClickListener exerciseInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			timeRemainingText.setVisibility(timeRemainingText.INVISIBLE);
-			currentExerciseDetails.setVisibility(timeRemainingText.VISIBLE);
+			timeRemainingText.setVisibility(View.INVISIBLE);
+			currentExerciseDetails.setVisibility(View.VISIBLE);
 		}
 		
 	};
@@ -445,13 +456,11 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	@Override
 	public void onHalfwayThroughExercise() {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
 	public void onPlayATaunt() {
-		// TODO Auto-generated method stub
 		
 	}
 	
