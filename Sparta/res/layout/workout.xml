@@ -72,6 +72,17 @@
         android:scrollbars="vertical"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque luctus lectus ut libero suscipit ac semper erat suscipit. Nam at odio ac purus hendrerit rutrum non non lacus. Cras euismod porttitor neque, ut mattis libero sagittis eget. Vivamus rhoncus fermentum tellus id fermentum. Nullam id mi quis dui mattis lacinia. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec viverra, nunc eget posuere venenatis, elit enim tempus massa, ultricies varius justo dolor eget sem. Maecenas vestibulum tincidunt gravida. Sed eget orci odio, auctor viverra mi. Vivamus aliquet congue massa, nec volutpat enim sodales eget. In neque erat, volutpat rutrum pharetra non, varius in nisi. Sed lacus massa, dapibus vitae lobortis ut, adipiscing et dui. Nulla quis tortor id purus rhoncus commodo. Duis imperdiet tortor porttitor tellus porttitor quis consectetur mauris ornare." />
 
+    <ImageView
+        android:id="@+id/imageViewExercise1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewCurrentExercise"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:height="160dp" />
+
     <ImageButton
         android:id="@+id/ImageButtonPrevious"
         android:layout_width="60dp"

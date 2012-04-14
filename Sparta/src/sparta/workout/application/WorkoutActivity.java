@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -44,7 +46,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageButton exerciseInfoButton;
 	TextView exerciseDetails;
 	ProgressBar progressBar;
-	
+	ImageView exerciseImageView1;
+	AnimationDrawable exerciseAnimation;
 	Intent intent;
 	
 	SoundManager soundManager;
@@ -106,6 +109,12 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
 		exerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
 		progressBar = (ProgressBar) findViewById(R.id.progressBarWorkout);
+		exerciseImageView1 = (ImageView) findViewById(R.id.imageViewExercise1);
+		
+		exerciseImageView1.setAlpha(50);
+		exerciseImageView1.setBackgroundResource(R.drawable.anim_goblet);
+		
+		exerciseAnimation = (AnimationDrawable) exerciseImageView1.getBackground();
 		
 		currentExerciseDetails.setMovementMethod(new ScrollingMovementMethod());
 		
@@ -164,6 +173,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			AddHandlers();
 			prepareForWar();
 			startupProgressDialog.dismiss();
+			
+			exerciseAnimation.start();
 			
 			super.onPostExecute(result);
 			

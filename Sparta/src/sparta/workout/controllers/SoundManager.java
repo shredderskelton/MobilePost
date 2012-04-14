@@ -1,7 +1,6 @@
 package sparta.workout.controllers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import sparta.workout.application.R;
@@ -13,13 +12,14 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.AsyncTask;
+import android.util.SparseArray;
 
 public class SoundManager implements IWorkoutListener {
 	
 	SoundPool soundPool;
 	AudioManager audioManager;
 	Context context;
-	HashMap<Integer, SoundResource> soundIdToSoundResourceMap;
+	SparseArray<SoundResource> soundIdToSoundResourceMap;
 	int SOUND_STREAM_ONE = 1;
 	
 	Boolean initialised = false;
@@ -32,7 +32,7 @@ public class SoundManager implements IWorkoutListener {
 		audioManager = aMgr;
 		context = contexta;
 		theme = voice;
-		soundIdToSoundResourceMap = new HashMap<Integer, SoundResource>();
+		soundIdToSoundResourceMap = new SparseArray<SoundResource>();
 	}
 	
 	/* SOUND */
@@ -89,7 +89,7 @@ public class SoundManager implements IWorkoutListener {
 		if (!initialised)
 			throw new RuntimeException("Not initialised", null);
 		
-		if (soundIdToSoundResourceMap.containsKey(resId)) {
+		if (soundIdToSoundResourceMap.get(resId, null) != null) {
 			
 			SoundResource soundId = soundIdToSoundResourceMap.get(resId);
 			
@@ -129,7 +129,7 @@ public class SoundManager implements IWorkoutListener {
 	
 	private void unloadASample(int resId) {
 		
-		if (soundIdToSoundResourceMap.containsKey(resId)) {
+		if (soundIdToSoundResourceMap.get(resId, null) != null) {
 			
 			soundPool.unload(soundIdToSoundResourceMap.get(resId).soundPoolHandle);
 			
