@@ -4,7 +4,7 @@ import java.io.FileDescriptor;
 import java.util.HashMap;
 
 public class SoundResource {
-
+	
 	public static final int count_onetwenty = 120;
 	public static final int count_ninety = 90;
 	public static final int count_sixty = 60;
@@ -21,12 +21,12 @@ public class SoundResource {
 	public static final int count_three = 3;
 	public static final int count_two = 2;
 	public static final int count_one = 1;
-
+	
 	public static final int control_halfway = 1000;
 	public static final int control_seconds = 1001;
 	public static final int control_restfor = 1002;
 	public static final int control_upnext = 1003;
-
+	
 	public static final int exercise_dumbbellpushpress = 2000;
 	public static final int exercise_dumbbellrow = 2001;
 	public static final int exercise_dumbbelllungeandrotate = 2002;
@@ -37,17 +37,17 @@ public class SoundResource {
 	public static final int exercise_splitjump = 2007;
 	public static final int exercise_tpushup = 2008;
 	public static final int exercise_dumbbellswing = 2009;
-
+	
 	public int resourceId;
 	public int soundPoolHandle;
 	public long duration;
-
+	
 	// Used for queueing up sounds - need to know how long this sample goes for
-
+	
 	public SoundResource() {
-
+		
 	}
-
+	
 	public static long getDuration(FileDescriptor fd) {
 		/*
 		 * Not Supported until 2.3.3 MediaMetadataRetriever metaRetriever = new
@@ -58,20 +58,20 @@ public class SoundResource {
 		 * (MediaMetadataRetriever.METADATA_KEY_DURATION);
 		 */
 		return 1000;
-
+		
 	}
-
+	
 	public SoundResource(int resId) {
 		resourceId = resId;
 	}
-
+	
 	private static HashMap<Integer, Integer> SecondsToSoundMap;
 	private static HashMap<String, Integer> ExerciseToSoundMap;
-
+	
 	public static int GetExerciseSound(String exercisename) {
-
+		
 		if (ExerciseToSoundMap == null) {
-
+			
 			ExerciseToSoundMap = new HashMap<String, Integer>();
 			ExerciseToSoundMap.put("gobletsquat", SoundResource.exercise_goblet);
 			ExerciseToSoundMap.put("mountainclimber", SoundResource.exercise_mountain);
@@ -90,5 +90,5 @@ public class SoundResource {
 			return -1;
 		}
 	}
-
+	
 }

@@ -3,6 +3,7 @@ package sparta.workout.application;
 import java.io.InputStream;
 
 import sparta.workout.controllers.SoundManager;
+import sparta.workout.models.AnimationResource;
 import sparta.workout.models.Exercise;
 import sparta.workout.models.IVoiceTheme;
 import sparta.workout.models.IWorkoutListener;
@@ -19,18 +20,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
@@ -43,13 +42,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageButton previousButton;
 	TextView upNextExerciceText;
 	TextView timeRemainingText;
-	Button timeRemainingButton;
-	TextView currentExerciseDetails;
 	ImageButton exerciseInfoButton;
-	TextView exerciseDetails;
-	ProgressBar progressBar;
-	ImageView exerciseImageView1;
-	AnimationDrawable exerciseAnimation;
+	ImageView exerciseImageViewAnimations;
+	AnimationDrawable spartacusAnimation;
+	
 	Intent intent;
 	
 	SoundManager soundManager;
@@ -110,25 +106,14 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		skipButton = (ImageButton) findViewById(R.id.imageButtonNext);
 		previousButton = (ImageButton) findViewById(R.id.ImageButtonPrevious);
 		upNextExerciceText = (TextView) findViewById(R.id.textViewUpNextExercise);
-		timeRemainingText = (TextView) findViewById(R.id.textViewTimeLeft);
-		timeRemainingButton = (Button) findViewById(R.id.buttonTimeLeft);
-		currentExerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
+		timeRemainingText = (TextView) findViewById(R.id.buttonTimeLeft);
 		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
-		exerciseDetails = (TextView) findViewById(R.id.textViewExerciseDetails);
-		progressBar = (ProgressBar) findViewById(R.id.progressBarWorkout);
-		exerciseImageView1 = (ImageView) findViewById(R.id.imageViewExercise1);
+		exerciseImageViewAnimations = (ImageView) findViewById(R.id.imageViewExerciseAnimation);
 		
-		exerciseImageView1.setAlpha(50);
-		exerciseImageView1.setBackgroundResource(R.drawable.anim_goblet);
+//		exerciseImageView1.setAlpha(50);
+		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_prepare);
 		
-		exerciseAnimation = (AnimationDrawable) exerciseImageView1.getBackground();
-		
-		currentExerciseDetails.setMovementMethod(new ScrollingMovementMethod());
-		
-		timeRemainingText.setVisibility(View.VISIBLE);
-		currentExerciseDetails.setVisibility(View.INVISIBLE);
-		
-		currentExerciceText.setText("Get ready for war!");
+		currentExerciceText.setText("");
 		
 	}
 	
@@ -181,8 +166,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			prepareForWar();
 			startupProgressDialog.dismiss();
 			
-			exerciseAnimation.start();
-			
 			super.onPostExecute(result);
 			
 		}
@@ -228,7 +211,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
-		timeRemainingButton.setOnClickListener(null);
 		exerciseInfoButton.setOnClickListener(null);
 		pauseResumeButton.setOnClickListener(null);
 		previousButton.setOnClickListener(null);
@@ -237,7 +219,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void AddHandlers() {
 		// Register the Click handler for the button.
-		timeRemainingButton.setOnClickListener(timeRemainingButtonClickListener);
 		exerciseInfoButton.setOnClickListener(exerciseInfoButtonClickListener);
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
 		previousButton.setOnClickListener(previousButtonClickListener);
@@ -245,17 +226,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	/** Event listeners */
-	private View.OnClickListener timeRemainingButtonClickListener = new View.OnClickListener() {
-		public void onClick(View v) {
-			timeRemainingText.setVisibility(View.VISIBLE);
-			currentExerciseDetails.setVisibility(View.INVISIBLE);
-		}
-		
-	};
+	
 	private View.OnClickListener exerciseInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			timeRemainingText.setVisibility(View.INVISIBLE);
-			currentExerciseDetails.setVisibility(View.VISIBLE);
+//TODO go to the info screen
 		}
 		
 	};
@@ -382,16 +356,11 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		
 		final int n = secondsLeft;
 		
-		timeRemainingButton.post(new Runnable() {
+		timeRemainingText.post(new Runnable() {
 			public void run() {
 				
 				// update the time remaining text box
-				timeRemainingButton.setText("" + n);
 				timeRemainingText.setText("" + n);
-				
-				int prog = workout.getProgressActual();
-				
-				progressBar.setProgress(prog);
 				
 			}
 		});
@@ -405,9 +374,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	@Override
 	public void onWorkoutStarted() {
 		
-		int max = workout.getProgressTotal();
-		progressBar.setMax(max);
-		
 		Exercise ex = workout.getCurrentExercise();
 		String t = "";
 		if (ex != null)
@@ -416,7 +382,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		
 		currentExerciceText.post(new Runnable() {
 			public void run() {
-				exerciseDetails.setText("Prepare for war!");
+				
 				currentExerciceText.setText("Ready yourself men!");
 				upNextExerciceText.setText(firstExerciseName);
 			}
@@ -431,15 +397,9 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	@Override
 	public void onExerciseStarted(Exercise exercise) {
 		
-		String details = "";
-		for (int i = 0; i < exercise.directions.length; i++) {
-			details += exercise.directions[i] + "\n";
-		}
-		
 		final String name = exercise.Name;
-		final String det;
 		final String next;
-		det = details;
+		final Drawable anim_res;
 		
 		String upnext = "";
 		if (workout.currentExerciseIsLastExercise()) {
@@ -449,9 +409,20 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		}
 		next = upnext;
 		
+		// anim_res = exercise.animationResourceName;
+		// exerciseImageViewAnimations.setImageDrawable(R.drawable.anim_mountain);
+		
+		anim_res = this.getResources().getDrawable(AnimationResource.GetExerciseAnimation(exercise.internalResourceName));
+		
 		currentExerciceText.post(new Runnable() {
 			public void run() {
-				exerciseDetails.setText(det);
+				
+				exerciseImageViewAnimations.setBackgroundDrawable(anim_res);
+				
+				// rocketImage.setBackgroundResource(R.drawable.rocket_thrust);
+				spartacusAnimation = (AnimationDrawable) exerciseImageViewAnimations.getBackground();
+				spartacusAnimation.start();
+				
 				currentExerciceText.setText(name);
 				upNextExerciceText.setText(next);
 			}
@@ -461,14 +432,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	public void onRestStarted(Exercise upNext, int restFor) {
 		
-		String details = "";
-		for (int i = 0; i < upNext.directions.length; i++) {
-			details += upNext.directions[i] + "\n";
-		}
-		
 		currentExerciceText.setText("Rest");
 		upNextExerciceText.setText(upNext.Name);
-		exerciseDetails.setText(details);
 		
 	}
 	

@@ -3,10 +3,10 @@
     android:oneshot="false" >
 
     <item
-        android:drawable="@drawable/workout_slave_squat_a"
+        android:drawable="@drawable/workout_6_a"
         android:duration="1500"/>
     <item
-        android:drawable="@drawable/workout_slave_squat_b"
+        android:drawable="@drawable/workout_6_b"
         android:duration="1500"/>
 
 </animation-list>

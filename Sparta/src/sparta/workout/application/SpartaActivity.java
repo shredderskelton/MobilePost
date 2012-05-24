@@ -86,11 +86,23 @@ public class SpartaActivity extends Activity {
 	
 	private void AddHandlers() {
 		// Register the Click handler for the button.
-		startButton.setOnClickListener(startButtonClickListener);
+		startButton.setOnClickListener(startBeginnerButtonClickListener);
 	}
 	
 	/** Event listeners */
-	private View.OnClickListener startButtonClickListener = new View.OnClickListener() {
+	private View.OnClickListener startBeginnerButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			StartWorkout();
+		}
+		
+	};
+	private View.OnClickListener startWarriorButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			StartWorkout();
+		}
+		
+	};
+	private View.OnClickListener startHeroButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			StartWorkout();
 		}

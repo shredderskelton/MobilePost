@@ -149,7 +149,7 @@ public class SoundManager implements IWorkoutListener {
 		SoundResource secs = soundIdToSoundResourceMap.get(residSeconds);
 		
 		if (e != null) {
-			int rawExerciseSoundId = theme.getSoundresourceIdFor(SoundResource.GetExerciseSound(e.soundResourceName));
+			int rawExerciseSoundId = theme.getSoundresourceIdFor(SoundResource.GetExerciseSound(e.internalResourceName));
 			int residUpNext = theme.getSoundresourceIdFor(SoundResource.control_upnext);
 			
 			SoundResource upnext = soundIdToSoundResourceMap.get(residUpNext);
@@ -165,7 +165,7 @@ public class SoundManager implements IWorkoutListener {
 		
 		// Log.d("SOUND", "Announcing current exercise: " + exercise.Name);
 		if (exercise != null) {
-			int templateSoundId = SoundResource.GetExerciseSound(exercise.soundResourceName);
+			int templateSoundId = SoundResource.GetExerciseSound(exercise.internalResourceName);
 			int rawExerciseSoundId = theme.getSoundresourceIdFor(templateSoundId);
 			SoundResource ne = soundIdToSoundResourceMap.get(rawExerciseSoundId);
 			SoundResource bell = soundIdToSoundResourceMap.get(R.raw.control_bell);
