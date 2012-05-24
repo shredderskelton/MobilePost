@@ -1,30 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:background="@drawable/standard_bg_bottom" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/main_title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/home_page_overlay" />
 
     <ImageButton
-        android:id="@+id/buttonStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/thisissparta" />
+        android:id="@+id/imageButtonMenuBeginner"
+        style="@style/home_button_menu"
+        android:layout_marginTop="185dp" />
+
+    <ImageButton
+        android:id="@+id/imageButtonMenuWarrior"
+        style="@style/home_button_menu"
+        android:layout_below="@+id/imageButtonMenuBeginner"
+        android:layout_marginTop="20dp" />
+
+    <ImageButton
+        android:id="@+id/imageButtonMenuHero"
+        style="@style/home_button_menu"
+        android:layout_below="@+id/imageButtonMenuWarrior"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:id="@+id/imageViewBeginnerText"
+        style="@style/home_button_menu_overlay"
+        android:layout_alignLeft="@+id/imageButtonMenuBeginner"
+        android:layout_alignTop="@+id/imageButtonMenuBeginner"
+        android:src="@drawable/btn_title_beginner" />
+
+    <ImageView
+        android:id="@+id/imageViewWarriorText"
+        style="@style/home_button_menu_overlay"
+        android:layout_alignLeft="@+id/imageButtonMenuWarrior"
+        android:layout_alignTop="@+id/imageButtonMenuWarrior"
+        android:src="@drawable/btn_title_warrior" />
+
+    <ImageView
+        android:id="@+id/imageViewHeroText"
+        style="@style/home_button_menu_overlay"
+        android:layout_alignLeft="@+id/imageButtonMenuHero"
+        android:layout_alignTop="@+id/imageButtonMenuHero"
+        android:src="@drawable/btn_title_hero" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/main_direction"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        style="@style/home_button_menu_details"
+        android:layout_alignBottom="@+id/imageButtonMenuBeginner"
+        android:layout_alignLeft="@+id/imageButtonMenuBeginner"
+        android:text="30 ON | 30 OFF" />
 
-</LinearLayout>
+    <TextView
+        style="@style/home_button_menu_details"
+        android:layout_alignBottom="@+id/imageButtonMenuWarrior"
+        android:layout_alignLeft="@+id/imageButtonMenuWarrior"
+        android:text="60 ON | 30 OFF" />
+
+    <TextView
+        style="@style/home_button_menu_details"
+        android:layout_alignBottom="@+id/imageButtonMenuHero"
+        android:layout_alignLeft="@+id/imageButtonMenuHero"
+        android:text="60 ON | 15 OFF" />
+
+</RelativeLayout>

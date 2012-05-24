@@ -19,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
 public class SettingsActivity extends Activity {
 	
 	SharedPreferences prefs;
@@ -31,10 +33,15 @@ public class SettingsActivity extends Activity {
 	String PREF_EXERCISETIME;
 	String PREF_VOICE;
 	
+	GoogleAnalyticsTracker tracker;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.trackPageView("/settings");
 		
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
@@ -77,6 +84,12 @@ public class SettingsActivity extends Activity {
 					ed.putInt(PREF_RESTTIME, val);
 					ed.commit();
 				}
+				
+				tracker.trackEvent("Settings", // Category
+						"Changed", // Action
+						"RestInterval", // Label
+						val); // Value
+				
 			}
 		});
 		
@@ -92,6 +105,12 @@ public class SettingsActivity extends Activity {
 					ed.putInt(PREF_EXERCISETIME, val);
 					ed.commit();
 				}
+				
+				tracker.trackEvent("Settings", // Category
+						"Changed", // Action
+						"ExerciseInterval", // Label
+						val); // Value
+				
 			}
 		});
 		spinVoice.setOnItemSelectedListener(new MyOnItemSelectedListener() {
@@ -113,6 +132,12 @@ public class SettingsActivity extends Activity {
 				int i = theme.getOpeningTaunt();
 				playTestSound(i);
 				ed.commit();
+				
+				tracker.trackEvent("Settings", // Category
+						"Changed", // Action
+						"VOICE", // Label
+						pos); // Value
+				
 			}
 		});
 		

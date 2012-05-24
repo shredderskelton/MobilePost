@@ -33,6 +33,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
 public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	TextView currentExerciceText;
@@ -61,10 +63,15 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ProgressDialog startupProgressDialog;
 	AudioManager audioMgr;
 	
+	GoogleAnalyticsTracker tracker;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.trackPageView("/workout");
 		
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		

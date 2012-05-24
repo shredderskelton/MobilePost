@@ -10,21 +10,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
 public class SpartaActivity extends Activity {
 	
 	private ImageButton startButton;
 	
 	private Intent intent;
 	
+	GoogleAnalyticsTracker tracker;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		tracker = GoogleAnalyticsTracker.getInstance();
+		
+		// Start the tracker in manual dispatch mode...
+		tracker.startNewSession("UA-31019615-1", 5, this);
+//
+//	    tracker.trackEvent(
+//	            "Clicks",  // Category
+//	            "Button",  // Action
+//	            "clicked", // Label
+//	            77);       // Value
+//	    
+		tracker.trackPageView("/app_entry_point");
+		
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		setContentView(R.layout.main);
 		
-		this.startButton = (ImageButton) findViewById(R.id.buttonStart);
+		this.startButton = (ImageButton) findViewById(R.id.imageButtonMenuBeginner);
 		
 		AddHandlers();
 		
