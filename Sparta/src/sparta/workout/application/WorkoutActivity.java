@@ -45,6 +45,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageButton exerciseInfoButton;
 	ImageView exerciseImageViewAnimations;
 	AnimationDrawable spartacusAnimation;
+	ImageButton imageViewPaused;
 	
 	Intent intent;
 	
@@ -109,7 +110,9 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		timeRemainingText = (TextView) findViewById(R.id.buttonTimeLeft);
 		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
 		exerciseImageViewAnimations = (ImageView) findViewById(R.id.imageViewExerciseAnimation);
-		
+		imageViewPaused = (ImageButton) findViewById(R.id.imageViewPausedOverlay);
+		imageViewPaused.setAlpha(50);
+		imageViewPaused.setVisibility(ImageView.INVISIBLE);
 //		exerciseImageView1.setAlpha(50);
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_prepare);
 		
@@ -212,6 +215,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
 		exerciseInfoButton.setOnClickListener(null);
+		imageViewPaused.setOnClickListener(null);
 		pauseResumeButton.setOnClickListener(null);
 		previousButton.setOnClickListener(null);
 		skipButton.setOnClickListener(null);
@@ -220,6 +224,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private void AddHandlers() {
 		// Register the Click handler for the button.
 		exerciseInfoButton.setOnClickListener(exerciseInfoButtonClickListener);
+		imageViewPaused.setOnClickListener(pauseresumeButtonClickListener);
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
 		previousButton.setOnClickListener(previousButtonClickListener);
 		skipButton.setOnClickListener(skipButtonClickListener);
@@ -259,12 +264,12 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void pauseWorkout() {
 		workout.pauseWorkout();
-		pauseResumeButton.setImageResource(android.R.drawable.ic_media_play);
+		imageViewPaused.setVisibility(ImageView.VISIBLE);
 	}
 	
 	private void resumeWorkout() {
 		workout.resumeWorkout();
-		pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
+		imageViewPaused.setVisibility(ImageView.INVISIBLE);
 	}
 	
 	private void confirmStopWorkout() {
