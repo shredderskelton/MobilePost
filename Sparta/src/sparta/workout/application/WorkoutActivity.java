@@ -42,7 +42,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageButton previousButton;
 	TextView upNextExerciceText;
 	TextView timeRemainingText;
-	ImageButton exerciseInfoButton;
+	ImageButton navInfoButton;
+	ImageButton navHomeButton;
 	ImageView exerciseImageViewAnimations;
 	AnimationDrawable spartacusAnimation;
 	ImageButton imageViewPaused;
@@ -98,7 +99,22 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		
 		audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 		soundManager = new SoundManager(audioMgr, (Context) this, theme);
+		
+		// setup workout
 		workout = new Workout(this, soundManager);
+		String typeOWorkout = getIntent().getStringExtra("WORKOUTTYPE");
+		
+		if (typeOWorkout == "Hero") {
+			workout.exerciseInterval = 60;
+			workout.restInterval = 15;
+		} else if (typeOWorkout == "Warrior") {
+			workout.exerciseInterval = 60;
+			workout.restInterval = 30;
+		} else {
+			workout.exerciseInterval = 30;
+			workout.restInterval = 30;
+			
+		}
 		
 		new PrepareStartupAsyncTask().execute(new Object());
 		
@@ -108,10 +124,11 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		previousButton = (ImageButton) findViewById(R.id.ImageButtonPrevious);
 		upNextExerciceText = (TextView) findViewById(R.id.textViewUpNextExercise);
 		timeRemainingText = (TextView) findViewById(R.id.buttonTimeLeft);
-		exerciseInfoButton = (ImageButton) findViewById(R.id.infoToggleButton);
+		navInfoButton = (ImageButton) findViewById(R.id.imageViewNavBarInfo);
+		navHomeButton = (ImageButton) findViewById(R.id.imageViewNavBarHome);
 		exerciseImageViewAnimations = (ImageView) findViewById(R.id.imageViewExerciseAnimation);
 		imageViewPaused = (ImageButton) findViewById(R.id.imageViewPausedOverlay);
-		imageViewPaused.setAlpha(50);
+		imageViewPaused.setAlpha(90);
 		imageViewPaused.setVisibility(ImageView.INVISIBLE);
 //		exerciseImageView1.setAlpha(50);
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_prepare);
@@ -145,19 +162,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			// initSoundPool();
 			soundManager.Initialise();
 			initialiseWorkout();
-			
-			int exerciseSetting = 60;
-			int restSetting = 15;
-			
-			try {
-				restSetting = prefs.getInt(getResources().getString(R.string.PREF_RESTTIME), 15);
-				exerciseSetting = prefs.getInt(getResources().getString(R.string.PREF_EXERCISETIME), 60);
-			} catch (Exception ex) {
-				Log.d("ERROR", "WTF: " + ex.getMessage());
-			}
-			
-			workout.restInterval = restSetting;
-			workout.exerciseInterval = exerciseSetting;
 			
 			return null;
 		}
@@ -214,7 +218,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
-		exerciseInfoButton.setOnClickListener(null);
+		navInfoButton.setOnClickListener(null);
+		navHomeButton.setOnClickListener(null);
 		imageViewPaused.setOnClickListener(null);
 		pauseResumeButton.setOnClickListener(null);
 		previousButton.setOnClickListener(null);
@@ -223,7 +228,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void AddHandlers() {
 		// Register the Click handler for the button.
-		exerciseInfoButton.setOnClickListener(exerciseInfoButtonClickListener);
+		navInfoButton.setOnClickListener(navInfoButtonClickListener);
+		navHomeButton.setOnClickListener(navHomeButtonClickListener);
 		imageViewPaused.setOnClickListener(pauseresumeButtonClickListener);
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
 		previousButton.setOnClickListener(previousButtonClickListener);
@@ -232,9 +238,16 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	/** Event listeners */
 	
-	private View.OnClickListener exerciseInfoButtonClickListener = new View.OnClickListener() {
+	private View.OnClickListener navInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-//TODO go to the info screen
+			// TODO go to the info screen
+		}
+		
+	};
+	private View.OnClickListener navHomeButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			// TODO go to the home screen
+			confirmStopWorkout();
 		}
 		
 	};

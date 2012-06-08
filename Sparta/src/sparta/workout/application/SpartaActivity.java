@@ -14,7 +14,9 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class SpartaActivity extends Activity {
 	
-	private ImageButton startButton;
+	private ImageButton workoutButtonBeginner;
+	private ImageButton workoutButtonWarrior;
+	private ImageButton workoutButtonHero;
 	
 	private Intent intent;
 	
@@ -41,7 +43,9 @@ public class SpartaActivity extends Activity {
 		
 		setContentView(R.layout.main);
 		
-		this.startButton = (ImageButton) findViewById(R.id.imageButtonMenuBeginner);
+		this.workoutButtonBeginner = (ImageButton) findViewById(R.id.imageButtonMenuBeginner);
+		this.workoutButtonWarrior = (ImageButton) findViewById(R.id.imageButtonMenuWarrior);
+		this.workoutButtonHero = (ImageButton) findViewById(R.id.imageButtonMenuHero);
 		
 		AddHandlers();
 		
@@ -81,36 +85,42 @@ public class SpartaActivity extends Activity {
 	
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks
-		startButton.setOnClickListener(null);
+		workoutButtonBeginner.setOnClickListener(null);
+		workoutButtonWarrior.setOnClickListener(null);
+		workoutButtonHero.setOnClickListener(null);
 	}
 	
 	private void AddHandlers() {
 		// Register the Click handler for the button.
-		startButton.setOnClickListener(startBeginnerButtonClickListener);
+		workoutButtonBeginner.setOnClickListener(startBeginnerButtonClickListener);
+		workoutButtonWarrior.setOnClickListener(startWarriorButtonClickListener);
+		workoutButtonHero.setOnClickListener(startHeroButtonClickListener);
 	}
 	
 	/** Event listeners */
 	private View.OnClickListener startBeginnerButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			StartWorkout();
+			StartWorkout("Beginner");
 		}
 		
 	};
 	private View.OnClickListener startWarriorButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			StartWorkout();
+			StartWorkout("Warrior");
 		}
 		
 	};
 	private View.OnClickListener startHeroButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			StartWorkout();
+			StartWorkout("Hero");
 		}
 		
 	};
 	
-	private void StartWorkout() {
+	private void StartWorkout(String diff) {
+		
 		intent = new Intent(this, WorkoutActivity.class);
+		intent.putExtra("WORKOUTTYPE", diff);
 		startActivity(intent);
 	}
 	

@@ -16,7 +16,8 @@
         android:label="@string/app_name" >
         <activity
             android:name=".SpartaActivity"
-            android:label="Spartacus Workout" >
+            android:label="Spartacus Workout"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,11 +26,13 @@
         </activity>
         <activity
             android:name=".WorkoutActivity"
-            android:label="Alesian fields" >
+            android:label="Alesian fields"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="Sparta Setup" >
+            android:label="Sparta Setup"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
     </application>
 

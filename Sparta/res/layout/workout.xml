@@ -4,23 +4,60 @@
     android:layout_height="fill_parent" >
 
     <ImageView
-        android:id="@+id/imageViewTitleUnderlay"
+        android:id="@+id/imageViewNavBarUnderlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
+        android:src="@drawable/standard_bg_top" />
+
+    <ImageView
+        android:id="@+id/imageViewNavBarWorkoutTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/title_beginner" />
+
+    <ImageButton
+        android:id="@+id/imageViewNavBarHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:background="@null"
+        android:src="@drawable/button_home" />
+
+    <ImageButton
+        android:id="@+id/imageViewNavBarInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:background="@null"
+        android:src="@drawable/button_info" />
+
+    <ImageView
+        android:id="@+id/imageViewTitleUnderlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageViewNavBarUnderlay"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/exercise_title_underlay" />
 
     <ImageView
         android:id="@+id/imageViewWorkoutScene"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/imageViewTitleUnderlay"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="40dp"
         android:src="@drawable/workout_scene" />
 
     <ImageView
@@ -38,15 +75,6 @@
         android:layout_centerHorizontal="true"
         android:text="Goblet Squat"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <ImageButton
-        android:id="@+id/infoToggleButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignBottom="@+id/imageViewWorkoutScene"
-        android:layout_alignRight="@+id/imageViewWorkoutScene"
-        android:background="@null"
-        android:src="@android:drawable/ic_menu_info_details" />
 
     <TextView
         android:id="@+id/buttonTimeLeft"
