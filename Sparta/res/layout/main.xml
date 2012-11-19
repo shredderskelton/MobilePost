@@ -5,7 +5,7 @@
     android:background="@drawable/standard_bg_bottom" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/imageViewOverlay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:src="@drawable/home_page_overlay" />
@@ -48,6 +48,24 @@
         android:layout_alignTop="@+id/imageButtonMenuHero"
         android:src="@drawable/btn_title_hero" />
 
+    <ImageView
+        android:id="@+id/imageViewWarriorLock"
+        style="@style/home_button_menu_overlay"
+        android:layout_alignRight="@+id/imageButtonMenuWarrior"
+        android:layout_alignTop="@+id/imageButtonMenuWarrior"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/lock" />
+
+    <ImageView
+        android:id="@+id/imageViewHeroLock"
+        style="@style/home_button_menu_overlay"
+        android:layout_alignRight="@+id/imageButtonMenuHero"
+        android:layout_alignTop="@+id/imageButtonMenuHero"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/lock" />
+
     <TextView
         style="@style/home_button_menu_details"
         android:layout_alignBottom="@+id/imageButtonMenuBeginner"
@@ -65,5 +83,23 @@
         android:layout_alignBottom="@+id/imageButtonMenuHero"
         android:layout_alignLeft="@+id/imageButtonMenuHero"
         android:text="60 ON | 15 OFF" />
+
+    <ImageView
+        android:id="@+id/imageViewTitleBarUnderlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/standard_bg_top" />
+
+    <ImageButton
+        android:id="@+id/imageViewButtonInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@null"
+        android:src="@drawable/button_info" />
 
 </RelativeLayout>

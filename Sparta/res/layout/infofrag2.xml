@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/imageViewSwords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="True"
+        android:src="@drawable/exercise_title_underlay" />
+
+    <TextView
+        android:id="@+id/infoExerciseLabel"
+        style="@style/info_exercise_text"
+        android:layout_alignParentTop="True"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="SLAVE SQUATS" />
+
+    <TextView
+        android:id="@+id/infoDirectionsOne"
+        style="@style/info_exercise_text"
+        android:layout_alignTop="@+id/imageViewOne"
+        android:layout_margin="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/imageViewOne"
+        android:text="Grab one end of a dumbbell/weight with both hands to hold it in front of your chest so it hangs vertically and stand with your feet slightly spread. Ready to fight."
+        android:textSize="16px" />
+
+    <TextView
+        android:id="@+id/infoDirectionsTwo"
+        style="@style/info_exercise_text"
+        android:layout_alignTop="@+id/imageViewTwo"
+        android:layout_margin="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/imageViewTwo"
+        android:text="Push your hips back, bend your knees, keeping your back naturally arched. Lower yourself until your thighs are at least parallel to the ground. If you are a weak slave, just use your body weight instead."
+        android:textSize="16px" />
+
+    <ImageView
+        android:id="@+id/imageViewOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageViewSwords"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/workout_scene_info"
+        android:maxHeight="200dp"
+        android:maxWidth="150dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/workout_1_a" />
+
+    <ImageView
+        android:id="@+id/imageViewTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageViewOne"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/workout_scene_info"
+        android:maxHeight="200dp"
+        android:maxWidth="150dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/workout_1_b" />
+
+</RelativeLayout>

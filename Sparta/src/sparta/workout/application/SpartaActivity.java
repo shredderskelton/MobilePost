@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
@@ -17,6 +18,11 @@ public class SpartaActivity extends Activity {
 	private ImageButton workoutButtonBeginner;
 	private ImageButton workoutButtonWarrior;
 	private ImageButton workoutButtonHero;
+	
+	private ImageButton infoButton;
+	
+	private ImageView lockIconWarrior;
+	private ImageView lockIconHero;
 	
 	private Intent intent;
 	
@@ -46,6 +52,11 @@ public class SpartaActivity extends Activity {
 		this.workoutButtonBeginner = (ImageButton) findViewById(R.id.imageButtonMenuBeginner);
 		this.workoutButtonWarrior = (ImageButton) findViewById(R.id.imageButtonMenuWarrior);
 		this.workoutButtonHero = (ImageButton) findViewById(R.id.imageButtonMenuHero);
+		
+		this.infoButton = (ImageButton) findViewById(R.id.imageViewButtonInfo);
+		
+		this.lockIconHero = (ImageView) findViewById(R.id.imageViewHeroLock);
+		this.lockIconWarrior = (ImageView) findViewById(R.id.imageViewWarriorLock);
 		
 		AddHandlers();
 		
@@ -95,6 +106,8 @@ public class SpartaActivity extends Activity {
 		workoutButtonBeginner.setOnClickListener(startBeginnerButtonClickListener);
 		workoutButtonWarrior.setOnClickListener(startWarriorButtonClickListener);
 		workoutButtonHero.setOnClickListener(startHeroButtonClickListener);
+		
+		infoButton.setOnClickListener(infoButtonClickListener);
 	}
 	
 	/** Event listeners */
@@ -116,6 +129,19 @@ public class SpartaActivity extends Activity {
 		}
 		
 	};
+	private View.OnClickListener infoButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			navigateToInfoScreen();
+		}
+		
+	};
+	
+	private void navigateToInfoScreen() {
+		
+		intent = new Intent(this, InfoActivity.class);
+		startActivity(intent);
+		
+	}
 	
 	private void StartWorkout(String diff) {
 		

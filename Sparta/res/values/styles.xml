@@ -25,4 +25,12 @@
         <item name="android:textColor">#000000</item>
     </style>
 
+    <style name="info_exercise_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textColor">#E6DEC7</item>
+    </style>
+
 </resources>

@@ -34,6 +34,11 @@
             android:label="Sparta Setup"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:name=".InfoActivity"
+            android:label="Info Activity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
     </application>
 
 </manifest>
