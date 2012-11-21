@@ -16,7 +16,7 @@
         android:layout_alignParentTop="True"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:text="SLAVE SQUATS" />
+        android:text="@string/exercise_title_2" />
 
     <TextView
         android:id="@+id/infoDirectionsOne"
@@ -26,7 +26,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/imageViewOne"
-        android:text="Grab one end of a dumbbell/weight with both hands to hold it in front of your chest so it hangs vertically and stand with your feet slightly spread. Ready to fight."
+        android:text="@string/exercise2a"
         android:textSize="16px" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/imageViewTwo"
-        android:text="Push your hips back, bend your knees, keeping your back naturally arched. Lower yourself until your thighs are at least parallel to the ground. If you are a weak slave, just use your body weight instead."
+        android:text="@string/exercise2b"
         android:textSize="16px" />
 
     <ImageView
@@ -53,7 +53,7 @@
         android:maxHeight="200dp"
         android:maxWidth="150dp"
         android:scaleType="fitXY"
-        android:src="@drawable/workout_1_a" />
+        android:src="@drawable/workout_4_a" />
 
     <ImageView
         android:id="@+id/imageViewTwo"
@@ -68,6 +68,6 @@
         android:maxHeight="200dp"
         android:maxWidth="150dp"
         android:scaleType="fitXY"
-        android:src="@drawable/workout_1_b" />
+        android:src="@drawable/workout_4_b" />
 
 </RelativeLayout>

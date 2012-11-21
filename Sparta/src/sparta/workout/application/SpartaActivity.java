@@ -2,11 +2,10 @@ package sparta.workout.application;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -60,6 +59,25 @@ public class SpartaActivity extends Activity {
 		
 		AddHandlers();
 		
+		unlockScreenIfUserHasPaid();
+		
+	}
+	
+	private boolean checkIfTheUserHasPaid() {
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String PREF_HASPAYED = getResources().getString(R.string.PREF_HASPAYED);
+		Boolean hasPayed = prefs.getBoolean(PREF_HASPAYED, false);
+		return hasPayed;
+		
+	}
+	
+	private void unlockScreenIfUserHasPaid() {
+		
+		if (checkIfTheUserHasPaid()) {
+			lockIconWarrior.setVisibility(ImageView.INVISIBLE);
+			lockIconHero.setVisibility(ImageView.INVISIBLE);
+		}
 	}
 	
 	@Override
@@ -69,30 +87,30 @@ public class SpartaActivity extends Activity {
 		super.onDestroy();
 	};
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true;
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.menu.menu, menu);
+//		return true;
+//	}
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.settings_menu:
-			navigateToSettingsActivity();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		// Handle item selection
+//		switch (item.getItemId()) {
+//		case R.id.settings_menu:
+//			navigateToSettingsActivity();
+//			return true;
+//		default:
+//			return super.onOptionsItemSelected(item);
+//		}
+//	}
 	
-	private void navigateToSettingsActivity() {
-		intent = new Intent(this, SettingsActivity.class);
-		startActivity(intent);
-		
-	}
+//	private void navigateToSettingsActivity() {
+//		intent = new Intent(this, SettingsActivity.class);
+//		startActivity(intent);
+//		
+//	}
 	
 	private void RemoveHandlers() {
 		// Unregister to prevent memory leaks

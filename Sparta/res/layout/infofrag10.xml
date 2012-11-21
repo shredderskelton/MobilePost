@@ -16,7 +16,7 @@
         android:layout_alignParentTop="True"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:text="@string/exercise_title_1" />
+        android:text="@string/exercise_title_5" />
 
     <TextView
         android:id="@+id/infoDirectionsOne"
@@ -26,7 +26,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/imageViewOne"
-        android:text="@string/exercise1a"
+        android:text="@string/exercise5c"
         android:textSize="16px" />
 
     <TextView
@@ -37,7 +37,18 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/imageViewTwo"
-        android:text="@string/exercise1b"
+        android:text="@string/exercise5a"
+        android:textSize="16px" />
+
+    <TextView
+        android:id="@+id/infoDirectionsThree"
+        style="@style/info_exercise_text"
+        android:layout_alignTop="@+id/imageViewThree"
+        android:layout_margin="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/imageViewThree"
+        android:text="@string/exercise5b"
         android:textSize="16px" />
 
     <ImageView
@@ -51,9 +62,9 @@
         android:adjustViewBounds="true"
         android:background="@drawable/workout_scene_info"
         android:maxHeight="200dp"
-        android:maxWidth="150dp"
+        android:maxWidth="140dp"
         android:scaleType="fitXY"
-        android:src="@drawable/workout_1_a" />
+        android:src="@drawable/workout_7_c" />
 
     <ImageView
         android:id="@+id/imageViewTwo"
@@ -66,8 +77,23 @@
         android:adjustViewBounds="true"
         android:background="@drawable/workout_scene_info"
         android:maxHeight="200dp"
-        android:maxWidth="150dp"
+        android:maxWidth="140dp"
         android:scaleType="fitXY"
-        android:src="@drawable/workout_1_b" />
+        android:src="@drawable/workout_7_b" />
+
+    <ImageView
+        android:id="@+id/imageViewThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageViewTwo"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/workout_scene_info"
+        android:maxHeight="200dp"
+        android:maxWidth="140dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/workout_7_a" />
 
 </RelativeLayout>

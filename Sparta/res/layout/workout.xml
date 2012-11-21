@@ -7,10 +7,7 @@
         android:id="@+id/imageViewNavBarUnderlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
         android:src="@drawable/standard_bg_top" />
 
     <ImageView
@@ -29,6 +26,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:background="@null"
         android:src="@drawable/button_home" />
 
@@ -38,7 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:background="@null"
         android:src="@drawable/button_info" />
 
@@ -50,6 +49,15 @@
         android:layout_below="@+id/imageViewNavBarUnderlay"
         android:layout_centerHorizontal="true"
         android:src="@drawable/exercise_title_underlay" />
+
+    <TextView
+        android:id="@+id/textViewCurrentExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageViewTitleUnderlay"
+        android:layout_centerHorizontal="true"
+        android:text="Goblet Squat"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
         android:id="@+id/imageViewWorkoutScene"
@@ -68,15 +76,6 @@
         android:layout_alignTop="@+id/imageViewWorkoutScene" />
 
     <TextView
-        android:id="@+id/textViewCurrentExercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageViewTitleUnderlay"
-        android:layout_centerHorizontal="true"
-        android:text="Goblet Squat"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
         android:id="@+id/buttonTimeLeft"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -93,9 +92,9 @@
         android:id="@+id/imageButtonNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/imageViewWorkoutScene"
-        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/imageViewWorkoutScene"
+        android:layout_marginTop="5dp"
         android:background="@null"
         android:src="@drawable/button_skip" />
 
@@ -103,8 +102,9 @@
         android:id="@+id/ImageButtonPlayPause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/imageViewWorkoutScene"
         android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:layout_toLeftOf="@+id/imageButtonNext"
         android:background="@null"
         android:src="@drawable/button_playpause" />
@@ -114,8 +114,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/imageViewWorkoutScene"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/imageViewWorkoutScene"
         android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:background="@null"
         android:src="@drawable/button_previous" />
 
@@ -124,9 +125,9 @@
         android:layout_width="150dp"
         android:layout_height="25dp"
         android:layout_alignBottom="@id/imageButtonNext"
-        android:layout_alignLeft="@+id/imageButtonNext"
-        android:layout_marginBottom="1dp"
-        android:layout_marginLeft="10dp"
+        android:layout_alignRight="@id/imageButtonNext"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
         android:ellipsize="marquee"
         android:maxLines="1"
         android:minLines="1"

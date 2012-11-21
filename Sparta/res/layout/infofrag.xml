@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/imageViewSwords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="True"
+        android:src="@drawable/exercise_title_underlay" />
+
+    <TextView
+        android:id="@+id/infoExerciseLabel"
+        style="@style/info_exercise_text"
+        android:layout_alignParentTop="True"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="GENERAL" />
+
+    <TextView
+        android:id="@+id/infoDirections"
+        style="@style/info_exercise_text"
+        android:layout_below="@+id/imageViewSwords"
+        android:text="Directions." />
+
+    <TextView
+        android:id="@+id/infoSteps"
+        style="@style/info_exercise_text"
+        android:layout_below="@+id/infoDirections"
+        android:text="1. Choose a workout suitable to your fitness level. \n2. Repeat the chosen workout 3 times a session. \n3. For god like fitness complete 3 sessions a week. \n4. Review the info pages for guides to each exercises.\n5. Use a weight that gets tough after 20 repetitions.\n6. Train like a gladiator for glory awaits"
+        android:textSize="16px" />
+
+    <TextView
+        android:id="@+id/infoHonour"
+        style="@style/info_exercise_text"
+        android:layout_below="@+id/infoSteps"
+        android:text="Honour." />
+
+    <TextView
+        android:id="@+id/infoSacrificer"
+        style="@style/info_exercise_text"
+        android:layout_below="@+id/infoHonour"
+        android:layout_marginTop="5dp"
+        android:text="The gods need sacrifice. For $1 appease the gods, rid yourself of the reminders, remove adverts and unlock the pathway to a gladiators body."
+        android:textSize="16px" />
+
+    <ImageButton
+        android:id="@+id/imageButtonSacrifice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/infoSacrificer"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:src="@drawable/button_sacrifice" />
+
+    <TextView
+        android:id="@+id/infoDevs"
+        style="@style/info_exercise_text"
+        android:layout_below="@+id/imageButtonSacrifice"
+        android:layout_marginTop="5dp"
+        android:text="Developer - Shredder Skelton. Design - D Caveman. Voices - Michael &apos;Redwolf&apos; Draven. © Muscle Apps 2012.  \nHistorical accuracy not guaranteed."
+        android:textSize="16px" />
+
+</RelativeLayout>

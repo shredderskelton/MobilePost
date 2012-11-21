@@ -241,6 +241,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private View.OnClickListener navInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			// TODO go to the info screen
+			navigateToInfo();
 		}
 		
 	};
@@ -333,6 +334,13 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private void navigateBacktomain() {
 		onDestroy();
 		finish();
+	}
+	
+	private void navigateToInfo() {
+		
+//TODO send the current exercise so that the info can scroll straight to it
+		intent = new Intent(this, InfoActivity.class);
+		startActivity(intent);
 	}
 	
 	public void initialiseWorkout() {

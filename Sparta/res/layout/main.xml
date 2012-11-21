@@ -91,6 +91,15 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/standard_bg_top" />
 
+    <ImageView
+        android:id="@+id/imageViewTitleBarHomeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/home_header_icon" />
+
     <ImageButton
         android:id="@+id/imageViewButtonInfo"
         android:layout_width="wrap_content"

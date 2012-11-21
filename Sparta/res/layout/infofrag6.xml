@@ -16,7 +16,7 @@
         android:layout_alignParentTop="True"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:text="@string/exercise_title_1" />
+        android:text="@string/exercise_title_6" />
 
     <TextView
         android:id="@+id/infoDirectionsOne"
@@ -26,7 +26,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/imageViewOne"
-        android:text="@string/exercise1a"
+        android:text="@string/exercise6a"
         android:textSize="16px" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/imageViewTwo"
-        android:text="@string/exercise1b"
+        android:text="@string/exercise6b"
         android:textSize="16px" />
 
     <ImageView
@@ -53,7 +53,7 @@
         android:maxHeight="200dp"
         android:maxWidth="150dp"
         android:scaleType="fitXY"
-        android:src="@drawable/workout_1_a" />
+        android:src="@drawable/workout_2_b" />
 
     <ImageView
         android:id="@+id/imageViewTwo"
@@ -68,6 +68,6 @@
         android:maxHeight="200dp"
         android:maxWidth="150dp"
         android:scaleType="fitXY"
-        android:src="@drawable/workout_1_b" />
+        android:src="@drawable/workout_2_a" />
 
 </RelativeLayout>

@@ -11,6 +11,7 @@
     <string name="PREF_EXERCISETIME">EXTIME</string>
     <string name="PREF_RESTTIME">RESTIME</string>
     <string name="PREF_VOICE">VOICE</string>
+    <string name="PREF_HASPAYED">2j3849798phu209ubf</string>
 
     <string-array name="interval_options">
         <item>5</item>
@@ -31,5 +32,37 @@
 
     <string name="currentExerciseLabel">Current Exercise</string>
     <string name="newExerciseLabel">Up next</string>
+    <string name="exercise_title_1">SLAVE SQUATS</string>
+    <string name="exercise1a">"Grab one end of a dumbbell or weight with both hands to hold it in front of your chest so it hangs vertically and stand with your feet slightly spread. Ready to fight.</string>
+    <string name="exercise1b">Push your hips back, bend your knees, keeping your back naturally arched. Lower yourself until your thighs are at least parallel to the ground. If you are a weak slave, just use your body weight instead.</string>
+    <string name="exercise_title_2">ZEUS\'S LADDER</string>
+    <string name="exercise2a">Ready yourself soldier! In a pushup position with your arms completely straight. Your body should form a line straighter than a roman road from your head to the ankles.</string>
+    <string name="exercise2b">Fixing your lower-back posture to not change, lift your right foot off the floor and slowly move your right knee toward your chest. Now soldier, return to the starting position, and repeat with your left leg until my word.</string>
+    <string name="exercise_title_3">SWORD SWINGS</string>
+    <string name="exercise3a">Grasp a dumbbell/weight at arms length in front of your waist. Round not your lower back, bend at both your hips and knees and swing the weight between your legs. Grrr.</string>
+    <string name="exercise3b">Keep your arm straight but thrust your hips forward and swing the weight to shoulder level as you, rise slave rise, till standing. Swing the weight back and forth. Halfway through, switch arms.</string>
+    <string name="exercise_title_4">THE PROUD KNEE</string>
+    <string name="exercise4a">Grasping it horizontally at the ends move a dumbbell/weight up just under your chin. Now Step forward soldier with your right foot and lower your torso into a lunge. During the lunge, rotate your torso to the right.</string>
+    <string name="exercise4b">Return to the start, and repeat with the left leg. Repeat left and right until finished. If you are too weak, perform the movement without the weight.</string>
+    <string name="exercise_title_5">TITAN PRESS</string>
+    <string name="exercise5a">Stand with your knees slightly bent and feet apart. Bend your knee soldier, then leap up with your legs and press the weights straight above your shoulders.</string>
+    <string name="exercise5b">Lower yourself into the starting position and repeat.</string>
+    <string name="exercise5c">Gladiators, stand holding a pair of dumbbells or weights just outside your shoulders, bend your arms and have your palms face each other.</string>
+    <string name="exercise_title_6">GLORY ROW</string>
+    <string name="exercise6a">Soldier, grab a pair of dumbbells, bend at your hips without rounding your lower back. Lower your torso until it is almost parallel to the floor. Let the dumbbells or weights hang at full arms length.</string>
+    <string name="exercise6b">Holding your torso position, raise your upper arms as you bend your elbows. Squeeze your shoulder blades together at the same time. Pause then lower the weights. Repeat.</string>
+    <string name="exercise_title_7">SLAVE BOAT ROW</string>
+    <string name="exercise7a">Hold a pair of dumbbells (preferably hex) or similar and with straight arms get in the push-up position.</string>
+    <string name="exercise7b">Holding your core rigid move the dumbbell in your right hand to the side of your chest. Bend your arm as you pull it up. Briefly pause and then lower the dumbbell rapidily. Repeat with the other arm.</string>
+    <string name="exercise_title_8">HURCULUNGE</string>
+    <string name="exercise8a">Now Gladiator. Hold at arms length a pair of dumbbells/weights at your sides. Take a large step to your lefthand side and lower your whole body by pushing your hips backward and bending your left knee.</string>
+    <string name="exercise8b">While you lower your body make sure you bend forward from the hips and touch the weights with ground. Switch sides halfway. If you are too weak gladiator then do the same without weights.</string>
+    <string name="exercise_title_9">LATIN LEAPS</string>
+    <string name="exercise9a">Prepare soldier by placing your feet 3 feet/1 meter apart, with your right foot forwards. Hold your torso upright while bending your legs and lower into a lunge. Now leap! Leap clear of the ground.</string>
+    <string name="exercise9b">Scissor kick your legs in the air so you land with your other leg forward. Repeat while switching back and forth.</string>
+    <string name="exercise_title_10">CRUCIFIXION PUSH UP</string>
+    <string name="exercise10a">As you push yourself up gladiator, raise your right hand and rotate the right side of your body as you raise the dumbbell straight up over your shoulder until your body forms a crucifix.</string>
+    <string name="exercise10b">Return to you start position by moving in reverse and then complete on the left side. Repeat.</string>
+    <string name="exercise10c">Hold onto a pair of dumbbells (preferable hex) and with straight arms assume the push-up position. Lower you body by bending your elbows until your chest is nearly on the floor.</string>
 
 </resources>
