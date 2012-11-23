@@ -1,9 +1,14 @@
 package sparta.workout.application;
 
+import sparta.workout.controllers.SoundManager;
+import sparta.workout.models.IVoiceTheme;
+import sparta.workout.models.VoiceThemeDraven;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -26,6 +31,9 @@ public class SpartaActivity extends Activity {
 	private Intent intent;
 	
 	GoogleAnalyticsTracker tracker;
+	
+	AudioManager audioMgr;
+	SoundManager soundManager;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -61,6 +69,15 @@ public class SpartaActivity extends Activity {
 		
 		unlockScreenIfUserHasPaid();
 		
+		IVoiceTheme theme = new VoiceThemeDraven();
+		
+		audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
+		SoundManager.instance = new SoundManager(audioMgr, (Context) this, theme);
+		soundManager = SoundManager.instance;
+		soundManager.Initialise();
+		
+		soundManager.PlayAOpeningTaunt();
+		
 	}
 	
 	private boolean checkIfTheUserHasPaid() {
@@ -82,10 +99,21 @@ public class SpartaActivity extends Activity {
 	
 	@Override
 	protected void onDestroy() {
+		if (soundManager != null) {
+			soundManager.destroy();
+			soundManager = null;
+		}
 		RemoveHandlers();
 		intent = null;
 		super.onDestroy();
 	};
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		unlockScreenIfUserHasPaid();
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 	
 //	@Override
 //	public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,9 +183,9 @@ public class SpartaActivity extends Activity {
 	};
 	
 	private void navigateToInfoScreen() {
-		
 		intent = new Intent(this, InfoActivity.class);
-		startActivity(intent);
+		
+		startActivityForResult(intent, 0);
 		
 	}
 	
@@ -165,7 +193,8 @@ public class SpartaActivity extends Activity {
 		
 		intent = new Intent(this, WorkoutActivity.class);
 		intent.putExtra("WORKOUTTYPE", diff);
-		startActivity(intent);
+		startActivityForResult(intent, 0); // force a recheck to see if user has
+											// paid
 	}
 	
 }

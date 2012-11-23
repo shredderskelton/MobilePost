@@ -1,7 +1,6 @@
 package sparta.workout.controllers;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import sparta.workout.application.R;
 import sparta.workout.models.Exercise;
@@ -16,6 +15,8 @@ import android.util.SparseArray;
 
 public class SoundManager implements IWorkoutListener {
 	
+	public static SoundManager instance;
+	
 	SoundPool soundPool;
 	AudioManager audioManager;
 	Context context;
@@ -24,7 +25,12 @@ public class SoundManager implements IWorkoutListener {
 	
 	Boolean initialised = false;
 	
-	ArrayList<Integer> tauntPlaylist;
+	int tauntPlaylistSeed = 0;
+	int buyPlaylistSeed = 0;
+	int quiterPlaylistSeed = 0;
+	int grrrPlaylistSeed = 0;
+	int openingPlaylistSeed = 0;
+	int completedPlaylistSeed = 0;
 	
 	IVoiceTheme theme;
 	
@@ -51,6 +57,9 @@ public class SoundManager implements IWorkoutListener {
 		samples.add(SoundResource.control_restfor);
 		samples.add(SoundResource.control_seconds);
 		samples.add(SoundResource.control_upnext);
+		samples.add(SoundResource.control_info);
+		samples.add(SoundResource.control_back);
+		samples.add(SoundResource.control_welcome);
 		samples.add(SoundResource.exercise_dumbbelllungeandrotate);
 		samples.add(SoundResource.exercise_tpushup);
 		samples.add(SoundResource.exercise_dumbbellpushpress);
@@ -68,21 +77,21 @@ public class SoundManager implements IWorkoutListener {
 			// Log.d("SOUND", "loading up sample rsource id " + resId);
 			loadUpASample(resId, SOUND_STREAM_ONE);
 		}
-		loadUpASample(R.raw.control_bell, SOUND_STREAM_ONE);
+		loadUpASample(R.raw.ctrl_bell_default, SOUND_STREAM_ONE);
 		
 		fillTaunts();
-		loadUpATaunt();
 		
 		initialised = true;
 	}
 	
 	private void fillTaunts() {
 		
-		tauntPlaylist = theme.getShortTaunts();
-		
-		loadUpASample(theme.getCompletedTaunt(), SOUND_STREAM_ONE);
-		loadUpASample(theme.getOpeningTaunt(), SOUND_STREAM_ONE);
-		loadUpASample(theme.getQuitterTaunt(), SOUND_STREAM_ONE);
+		loadNextOpeningTaunt();
+		loadNextBuyTaunt();
+		loadNextCompletedTaunt();
+		loadNextGrrTaunt();
+		loadNextQuitterTaunt();
+		loadNextTaunt();
 	}
 	
 	public void playResourceInSoundPool(int resId, int priority) {
@@ -173,32 +182,111 @@ public class SoundManager implements IWorkoutListener {
 		}
 	}
 	
+	int loadedOpeningTaunt = 0;
+	
+	public void PlayAOpeningTaunt() {
+		
+		playResourceInSoundPool(loadedOpeningTaunt, 1);
+		
+		loadNextOpeningTaunt();
+	}
+	
+	private void loadNextOpeningTaunt() {
+		// unload old sample, increment seed and load the new sample
+		unloadASample(loadedOpeningTaunt);
+		openingPlaylistSeed++;
+		loadedOpeningTaunt = theme.getOpeningTaunt(openingPlaylistSeed);
+		loadUpASample(loadedOpeningTaunt, SOUND_STREAM_ONE);
+		
+	}
+	
+	int loadedBuyTaunt = 0;
+	
+	public void PlayABuyTaunt() {
+		
+		playResourceInSoundPool(loadedBuyTaunt, 1);
+		
+		loadNextBuyTaunt();
+	}
+	
+	private void loadNextBuyTaunt() {
+		// unload old sample, increment seed and load the new sample
+		unloadASample(loadedBuyTaunt);
+		buyPlaylistSeed++;
+		loadedBuyTaunt = theme.getBuyTaunt(buyPlaylistSeed);
+		loadUpASample(loadedBuyTaunt, SOUND_STREAM_ONE);
+		
+	}
+	
+	int loadedQuitterTaunt = 0;
+	
+	public void PlayAQuitterTaunt() {
+		
+		playResourceInSoundPool(loadedQuitterTaunt, 1);
+		
+		loadNextQuitterTaunt();
+	}
+	
+	private void loadNextQuitterTaunt() {
+		// unload old sample, increment seed and load the new sample
+		unloadASample(loadedQuitterTaunt);
+		quiterPlaylistSeed++;
+		loadedQuitterTaunt = theme.getQuitterTaunt(quiterPlaylistSeed);
+		loadUpASample(loadedQuitterTaunt, SOUND_STREAM_ONE);
+		
+	}
+	
+	int loadedGrrTaunt = 0;
+	
+	public void PlayAGrrTaunt() {
+		
+		playResourceInSoundPool(loadedGrrTaunt, 1);
+		
+		loadNextGrrTaunt();
+	}
+	
+	private void loadNextGrrTaunt() {
+		// unload old sample, increment seed and load the new sample
+		unloadASample(loadedGrrTaunt);
+		grrrPlaylistSeed++;
+		loadedGrrTaunt = theme.getGrrrr(grrrPlaylistSeed);
+		loadUpASample(loadedGrrTaunt, SOUND_STREAM_ONE);
+		
+	}
+	
 	int loadedTaunt = 0;
 	
 	public void PlayATaunt() {
 		
 		playResourceInSoundPool(loadedTaunt, 1);
 		
-		loadUpATaunt();
+		loadNextTaunt();
 	}
 	
-	private void loadUpATaunt() {
-		
+	private void loadNextTaunt() {
+		// unload old sample, increment seed and load the new sample
 		unloadASample(loadedTaunt);
-		
-		if (tauntPlaylist.isEmpty())
-			fillTaunts();
-		
-		int i = 0;
-		
-		if (tauntPlaylist.size() > 1) {
-			Random rand = new Random();
-			i = rand.nextInt(tauntPlaylist.size() - 1);
-		}
-		
-		loadedTaunt = tauntPlaylist.remove(i);
-		
+		tauntPlaylistSeed++;
+		loadedTaunt = theme.getShortTaunt(tauntPlaylistSeed);
 		loadUpASample(loadedTaunt, SOUND_STREAM_ONE);
+		
+	}
+	
+	int loadedCompletedTaunt = 0;
+	
+	public void PlayACompletedTaunt() {
+		
+		playResourceInSoundPool(loadedCompletedTaunt, 1);
+		
+		loadNextCompletedTaunt();
+	}
+	
+	private void loadNextCompletedTaunt() {
+		// unload old sample, increment seed and load the new sample
+		unloadASample(loadedCompletedTaunt);
+		completedPlaylistSeed++;
+		loadedCompletedTaunt = theme.getCompletedTaunt(completedPlaylistSeed);
+		loadUpASample(loadedCompletedTaunt, SOUND_STREAM_ONE);
 		
 	}
 	
@@ -249,14 +337,12 @@ public class SoundManager implements IWorkoutListener {
 	
 	@Override
 	public void onWorkoutFinished() {
-		int resId = theme.getCompletedTaunt();
-		playResourceInSoundPool(resId, 1);
+		PlayACompletedTaunt();
 	}
 	
 	@Override
 	public void onWorkoutStarted() {
-		int resId = theme.getOpeningTaunt();
-		playResourceInSoundPool(resId, 1);
+		PlayAOpeningTaunt();
 	}
 	
 	@Override
@@ -289,7 +375,6 @@ public class SoundManager implements IWorkoutListener {
 	}
 	
 	public void onQuit() {
-		int resId = theme.getQuitterTaunt();
-		playResourceInSoundPool(resId, 1);
+		PlayAQuitterTaunt();
 	}
 }

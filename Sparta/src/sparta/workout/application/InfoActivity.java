@@ -1,5 +1,6 @@
 package sparta.workout.application;
 
+import sparta.workout.controllers.SoundManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
@@ -9,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,8 @@ public class InfoActivity extends FragmentActivity {
 	/** Event listeners */
 	private View.OnClickListener closeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
+			
+			setResult(0); // forces the main screen to check for a payment
 			finish();
 		}
 		
@@ -59,6 +63,26 @@ public class InfoActivity extends FragmentActivity {
 		}
 		
 	};
+	private ViewPager.OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
+		
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			SoundManager.instance.PlayAGrrTaunt();
+		}
+		
+		@Override
+		public void onPageSelected(int arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
 	
 	private void initialisePaging() {
 		
@@ -66,6 +90,7 @@ public class InfoActivity extends FragmentActivity {
 		
 		ViewPager pager = (ViewPager) super.findViewById(R.id.infoViewPager);
 		pager.setAdapter(this.pageAdapter);
+		pager.setOnPageChangeListener(pageChangeListener);
 	}
 	
 	@Override
@@ -146,6 +171,7 @@ public class InfoActivity extends FragmentActivity {
 		public Parcelable saveState() {
 			return null;
 		}
+		
 	}
 	
 }

@@ -5,16 +5,11 @@ import java.io.InputStream;
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.AnimationResource;
 import sparta.workout.models.Exercise;
-import sparta.workout.models.IVoiceTheme;
 import sparta.workout.models.IWorkoutListener;
-import sparta.workout.models.VoiceThemeBigby;
-import sparta.workout.models.VoiceThemeNick;
-import sparta.workout.models.VoiceThemeSean;
 import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +19,6 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -59,7 +53,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
-	AudioManager audioMgr;
 	
 	GoogleAnalyticsTracker tracker;
 	
@@ -82,23 +75,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		startupProgressDialog.setCancelable(false);
 		startupProgressDialog.show();
 		
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		String PREF_VOICE = getResources().getString(R.string.PREF_VOICE);
-		
-		String voiceSetting = prefs.getString(PREF_VOICE, "Bigby");
-		
-		IVoiceTheme theme;
-		
-		if (voiceSetting.matches("Nick")) {
-			theme = new VoiceThemeNick();
-		} else if (voiceSetting.matches("Sean"))
-			theme = new VoiceThemeSean();
-		else
-			theme = new VoiceThemeBigby();
-		
-		audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
-		soundManager = new SoundManager(audioMgr, (Context) this, theme);
+		soundManager = SoundManager.instance;
 		
 		// setup workout
 		workout = new Workout(this, soundManager);
@@ -144,10 +121,14 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			return true;
 		}
 		if (KeyEvent.KEYCODE_VOLUME_UP == event.getKeyCode()) {
+			
+			AudioManager audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 			audioMgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 			return true;
 		}
 		if (KeyEvent.KEYCODE_VOLUME_DOWN == event.getKeyCode()) {
+			
+			AudioManager audioMgr = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 			audioMgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
 			return true;
 		}
@@ -160,7 +141,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		protected Void doInBackground(Object... o) {
 			
 			// initSoundPool();
-			soundManager.Initialise();
 			initialiseWorkout();
 			
 			return null;
@@ -279,6 +259,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private void pauseWorkout() {
 		workout.pauseWorkout();
 		imageViewPaused.setVisibility(ImageView.VISIBLE);
+		imageViewPaused.setAlpha(100);
 	}
 	
 	private void resumeWorkout() {
@@ -320,7 +301,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		RemoveHandlers();
 		intent = null;
 		if (soundManager != null) {
-			soundManager.destroy();
 			soundManager = null;
 		}
 		if (workout != null) {
@@ -461,6 +441,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExerciceText.setText("Rest");
 		upNextExerciceText.setText(upNext.Name);
 		
+		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_rest);
 	}
 	
 	@Override

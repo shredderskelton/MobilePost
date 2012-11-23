@@ -26,6 +26,9 @@ public class SoundResource {
 	public static final int control_seconds = 1001;
 	public static final int control_restfor = 1002;
 	public static final int control_upnext = 1003;
+	public static final int control_info = 1004;
+	public static final int control_back = 1005;
+	public static final int control_welcome = 1006;
 	
 	public static final int exercise_dumbbellpushpress = 2000;
 	public static final int exercise_dumbbellrow = 2001;

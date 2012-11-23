@@ -1,8 +1,8 @@
 
 	{
-	"name":"Dumb Bell Row",
 	"soundname" : "dumbbellrow",
-	"order" : 6,
+	"name":"Slave Boat Row",
+	"order" : 8,
 		"directions":
 			[
 	"Grab a pair of dumbbells, bend at your hips (dont round your lower back), and lower your torso until it is nearly parallel to the floor. let the dumbbells hang at arms length",
