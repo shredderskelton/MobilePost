@@ -117,7 +117,7 @@ public class Workout {
 		}
 	}
 	
-	public void moveToNextExercise() {
+	public void moveToNextExercise(Boolean skipping) {
 		
 		if (Routines.size() > 0) {
 			if (currentExerciseIsLastExercise()) {
@@ -132,7 +132,7 @@ public class Workout {
 				else
 					currentExercise++;
 				
-				raiseOnExerciseStarted();
+				raiseOnExerciseStarted(skipping);
 				restartTimer(exerciseInterval * 1000);
 				
 			}
@@ -144,7 +144,7 @@ public class Workout {
 		listener.onWorkoutFinished();
 	}
 	
-	public void moveToPreviousExercise() {
+	public void moveToPreviousExercise(Boolean skipping) {
 		
 		if (Routines.size() > 0) {
 			
@@ -153,7 +153,7 @@ public class Workout {
 			if (currentExercise > 0 && timeLeft > exerciseInterval * 1000 - 3000)
 				currentExercise--;// restart current exercise first, then
 									// skip back
-			raiseOnExerciseStarted();
+			raiseOnExerciseStarted(skipping);
 			restartTimer(exerciseInterval * 1000);
 			
 		}
@@ -203,9 +203,9 @@ public class Workout {
 		
 	}
 	
-	private void raiseOnExerciseStarted() {
-		listenerb.onExerciseStarted(Routines.get(currentExercise));
-		listener.onExerciseStarted(Routines.get(currentExercise));
+	private void raiseOnExerciseStarted(Boolean skipping) {
+		listenerb.onExerciseStarted(Routines.get(currentExercise), skipping);
+		listener.onExerciseStarted(Routines.get(currentExercise), skipping);
 		
 	}
 	
@@ -225,7 +225,7 @@ public class Workout {
 				else {
 					
 					if (isResting)
-						moveToNextExercise();
+						moveToNextExercise(false);
 					else
 						moveToResting();
 				}

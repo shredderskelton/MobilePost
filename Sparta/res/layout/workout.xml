@@ -56,8 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageViewTitleUnderlay"
         android:layout_centerHorizontal="true"
-        android:text="Goblet Squat"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="17dp" />
 
     <ImageView
         android:id="@+id/imageViewWorkoutScene"
@@ -81,8 +80,8 @@
         android:layout_height="60dp"
         android:layout_alignRight="@+id/imageViewWorkoutScene"
         android:layout_alignTop="@+id/imageViewWorkoutScene"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginRight="22dp"
+        android:layout_marginTop="10dp"
         android:background="@null"
         android:text="60"
         android:textColor="#aaaaaa"
@@ -122,24 +121,25 @@
 
     <TextView
         android:id="@+id/textViewUpNextExercise"
-        android:layout_width="150dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imageButtonNext"
-        android:layout_alignRight="@id/imageButtonNext"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_alignLeft="@id/imageButtonNext"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="8dp"
         android:ellipsize="marquee"
         android:maxLines="1"
         android:minLines="1"
         android:singleLine="true"
-        android:text="Mountain Climber"
-        android:textSize="20dp" />
+        android:textColor="#000000"
+        android:textSize="15dp" />
 
     <ImageButton
         android:id="@+id/imageViewPausedOverlay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="@null"
         android:src="@drawable/workout_pause_overlay_btn"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </RelativeLayout>

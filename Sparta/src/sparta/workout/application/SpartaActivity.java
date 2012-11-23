@@ -76,7 +76,18 @@ public class SpartaActivity extends Activity {
 		soundManager = SoundManager.instance;
 		soundManager.Initialise();
 		
-		soundManager.PlayAOpeningTaunt();
+		infoButton.post(new Runnable() {
+			public void run() {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				soundManager.PlayWelcome();
+			}
+		});
+		// soundManager.PlayAOpeningTaunt();
 		
 	}
 	
@@ -190,7 +201,6 @@ public class SpartaActivity extends Activity {
 	}
 	
 	private void StartWorkout(String diff) {
-		
 		intent = new Intent(this, WorkoutActivity.class);
 		intent.putExtra("WORKOUTTYPE", diff);
 		startActivityForResult(intent, 0); // force a recheck to see if user has

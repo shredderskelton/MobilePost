@@ -41,6 +41,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageView exerciseImageViewAnimations;
 	AnimationDrawable spartacusAnimation;
 	ImageButton imageViewPaused;
+	ImageView imageViewWorkoutLevel;
 	
 	Intent intent;
 	
@@ -77,22 +78,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		
 		soundManager = SoundManager.instance;
 		
-		// setup workout
-		workout = new Workout(this, soundManager);
-		String typeOWorkout = getIntent().getStringExtra("WORKOUTTYPE");
-		
-		if (typeOWorkout == "Hero") {
-			workout.exerciseInterval = 60;
-			workout.restInterval = 15;
-		} else if (typeOWorkout == "Warrior") {
-			workout.exerciseInterval = 60;
-			workout.restInterval = 30;
-		} else {
-			workout.exerciseInterval = 30;
-			workout.restInterval = 30;
-			
-		}
-		
 		new PrepareStartupAsyncTask().execute(new Object());
 		
 		currentExerciceText = (TextView) findViewById(R.id.textViewCurrentExercise);
@@ -107,10 +92,29 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		imageViewPaused = (ImageButton) findViewById(R.id.imageViewPausedOverlay);
 		imageViewPaused.setAlpha(90);
 		imageViewPaused.setVisibility(ImageView.INVISIBLE);
-//		exerciseImageView1.setAlpha(50);
+		imageViewWorkoutLevel = (ImageView) findViewById(R.id.imageViewNavBarWorkoutTitle);
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_prepare);
 		
 		currentExerciceText.setText("");
+		
+		// setup workout
+		workout = new Workout(this, soundManager);
+		String typeOWorkout = getIntent().getStringExtra("WORKOUTTYPE");
+		
+		if (typeOWorkout == "Hero") {
+			workout.exerciseInterval = 60;
+			workout.restInterval = 15;
+			imageViewWorkoutLevel.setBackgroundResource(R.drawable.title_hero);
+		} else if (typeOWorkout == "Warrior") {
+			workout.exerciseInterval = 60;
+			workout.restInterval = 30;
+			imageViewWorkoutLevel.setBackgroundResource(R.drawable.title_warrior);
+		} else {
+			workout.exerciseInterval = 30;
+			workout.restInterval = 30;
+			imageViewWorkoutLevel.setBackgroundResource(R.drawable.title_beginner);
+			
+		}
 		
 	}
 	
@@ -178,6 +182,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void AllDone() {
 		
+		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_rest);
 		currentExerciceText.setText("All Done");
 		upNextExerciceText.setText("");
 		String message = "It's an honour to die by your side";
@@ -244,22 +249,24 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private View.OnClickListener skipButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			
-			workout.moveToNextExercise();
+			workout.moveToNextExercise(true);
 		}
 		
 	};
 	private View.OnClickListener previousButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			
-			workout.moveToPreviousExercise();
+			workout.moveToPreviousExercise(true);
 		}
 		
 	};
 	
 	private void pauseWorkout() {
 		workout.pauseWorkout();
+		int alpha = 170;
 		imageViewPaused.setVisibility(ImageView.VISIBLE);
-		imageViewPaused.setAlpha(100);
+		// imageViewPaused.getBackground().setAlpha(alpha);
+		imageViewPaused.setAlpha(alpha);
 	}
 	
 	private void resumeWorkout() {
@@ -269,29 +276,30 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void confirmStopWorkout() {
 		
-		pauseWorkout();
+		// pauseWorkout();
 		soundManager.onQuit();
-		String message = "Are you sure you want to cancel the workout?";
-		String title = "Leave Sparta with your tail between your legs?";
-		String yes = "I am a pussy";
-		String no = "Hell no!";
-		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
-		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				
-				navigateBacktomain();
-				
-				dialog.dismiss();
-				
-			}
-		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				resumeWorkout();
-				dialog.cancel();
-			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+//		String message = "Are you sure you want to cancel the workout?";
+//		String title = "Leave Sparta with your tail between your legs?";
+//		String yes = "I am a pussy";
+//		String no = "Hell no!";
+//		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+//		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				
+//				navigateBacktomain();
+//				
+//				dialog.dismiss();
+//				
+//			}
+//		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				resumeWorkout();
+//				dialog.cancel();
+//			}
+//		});
+//		AlertDialog alert = builder.create();
+//		alert.show();
+		navigateBacktomain();
 		
 	}
 	
@@ -389,7 +397,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExerciceText.post(new Runnable() {
 			public void run() {
 				
-				currentExerciceText.setText("Ready yourself men!");
+				currentExerciceText.setText("");
 				upNextExerciceText.setText(firstExerciseName);
 			}
 		});
@@ -401,7 +409,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	@Override
-	public void onExerciseStarted(Exercise exercise) {
+	public void onExerciseStarted(Exercise exercise, Boolean skipping) {
 		
 		final String name = exercise.Name;
 		final String next;
@@ -438,7 +446,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	public void onRestStarted(Exercise upNext, int restFor) {
 		
-		currentExerciceText.setText("Rest");
+		currentExerciceText.setText("REST");
 		upNextExerciceText.setText(upNext.Name);
 		
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_rest);

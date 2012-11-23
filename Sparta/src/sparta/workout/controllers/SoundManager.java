@@ -177,9 +177,16 @@ public class SoundManager implements IWorkoutListener {
 			int templateSoundId = SoundResource.GetExerciseSound(exercise.internalResourceName);
 			int rawExerciseSoundId = theme.getSoundresourceIdFor(templateSoundId);
 			SoundResource ne = soundIdToSoundResourceMap.get(rawExerciseSoundId);
-			SoundResource bell = soundIdToSoundResourceMap.get(R.raw.control_bell);
+			SoundResource bell = soundIdToSoundResourceMap.get(R.raw.ctrl_bell_default);
 			new PlaySoundQueueAsyncTask().execute(bell, ne);
 		}
+	}
+	
+	public void PlayWelcome() {
+		
+		int templateSoundId = theme.getSoundresourceIdFor(SoundResource.control_welcome);
+		playResourceInSoundPool(templateSoundId, 1);
+		
 	}
 	
 	int loadedOpeningTaunt = 0;
@@ -350,7 +357,7 @@ public class SoundManager implements IWorkoutListener {
 	}
 	
 	@Override
-	public void onExerciseStarted(Exercise exercise) {
+	public void onExerciseStarted(Exercise exercise, Boolean skipping) {
 		AnnounceCurrentExercise(exercise);
 	}
 	
