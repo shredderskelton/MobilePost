@@ -11,7 +11,8 @@
     <string name="PREF_EXERCISETIME">EXTIME</string>
     <string name="PREF_RESTTIME">RESTIME</string>
     <string name="PREF_VOICE">VOICE</string>
-    <string name="PREF_HASPAYED">2j3849798phu209ubf</string>
+    <string name="PREF_HASPAYED">87uh9g8</string>
+    <string name="EXTRA_WANTSTOPAY">jdjkksl</string>
 
     <string-array name="interval_options">
         <item>5</item>

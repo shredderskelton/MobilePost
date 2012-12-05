@@ -4,7 +4,9 @@ import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.IVoiceTheme;
 import sparta.workout.models.VoiceThemeDraven;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -15,7 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+//import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class SpartaActivity extends Activity {
 	
@@ -30,7 +32,7 @@ public class SpartaActivity extends Activity {
 	
 	private Intent intent;
 	
-	GoogleAnalyticsTracker tracker;
+	// GoogleAnalyticsTracker tracker;
 	
 	AudioManager audioMgr;
 	SoundManager soundManager;
@@ -39,10 +41,10 @@ public class SpartaActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		tracker = GoogleAnalyticsTracker.getInstance();
+		// tracker = GoogleAnalyticsTracker.getInstance();
 		
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession("UA-31019615-1", 5, this);
+		// tracker.startNewSession("UA-31019615-1", 5, this);
 //
 //	    tracker.trackEvent(
 //	            "Clicks",  // Category
@@ -50,7 +52,7 @@ public class SpartaActivity extends Activity {
 //	            "clicked", // Label
 //	            77);       // Value
 //	    
-		tracker.trackPageView("/app_entry_point");
+		// tracker.trackPageView("/app_entry_point");
 		
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
@@ -91,7 +93,7 @@ public class SpartaActivity extends Activity {
 		
 	}
 	
-	private boolean checkIfTheUserHasPaid() {
+	private boolean userHasPaid() {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String PREF_HASPAYED = getResources().getString(R.string.PREF_HASPAYED);
@@ -102,7 +104,7 @@ public class SpartaActivity extends Activity {
 	
 	private void unlockScreenIfUserHasPaid() {
 		
-		if (checkIfTheUserHasPaid()) {
+		if (userHasPaid()) {
 			lockIconWarrior.setVisibility(ImageView.INVISIBLE);
 			lockIconHero.setVisibility(ImageView.INVISIBLE);
 		}
@@ -176,26 +178,34 @@ public class SpartaActivity extends Activity {
 	};
 	private View.OnClickListener startWarriorButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			StartWorkout("Warrior");
+			if (userHasPaid()) {
+				StartWorkout("Warrior");
+			} else {
+				AskUserForMoney();
+			}
 		}
 		
 	};
 	private View.OnClickListener startHeroButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			StartWorkout("Hero");
+			if (userHasPaid()) {
+				StartWorkout("Hero");
+			} else {
+				AskUserForMoney();
+			}
 		}
 		
 	};
 	private View.OnClickListener infoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			navigateToInfoScreen();
+			navigateToInfoScreen(false);
 		}
 		
 	};
 	
-	private void navigateToInfoScreen() {
+	private void navigateToInfoScreen(Boolean toMakePurchase) {
 		intent = new Intent(this, InfoActivity.class);
-		
+		intent.putExtra("PLAY", toMakePurchase);
 		startActivityForResult(intent, 0);
 		
 	}
@@ -205,6 +215,30 @@ public class SpartaActivity extends Activity {
 		intent.putExtra("WORKOUTTYPE", diff);
 		startActivityForResult(intent, 0); // force a recheck to see if user has
 											// paid
+	}
+	
+	private void AskUserForMoney() {
+		String message = "Unlock the full potential of Spartacus?";
+		String yes = "Hell yeah";
+		AlertDialog.Builder builder = new AlertDialog.Builder(SpartaActivity.this);
+		builder.setCancelable(true).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				
+				navigateToInfoScreen(true);
+				
+				dialog.dismiss();
+				
+			}
+		}).setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				
+				dialog.dismiss();
+				
+			}
+		});
+		
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 }

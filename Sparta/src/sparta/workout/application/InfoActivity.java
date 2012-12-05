@@ -27,6 +27,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.viewpagerindicator.CirclePageIndicator;
+
 public class InfoActivity extends FragmentActivity {
 	
 	private ImageButton button_sacrifice;
@@ -74,6 +76,10 @@ public class InfoActivity extends FragmentActivity {
 			showDialog(DIALOG_SUBSCRIPTIONS_NOT_SUPPORTED_ID);
 		}
 		
+		Boolean play = getIntent().getBooleanExtra("PLAY", false);
+		
+		if (play)
+			MakeSacrifice();
 	}
 	
 	/** Event listeners */
@@ -87,13 +93,18 @@ public class InfoActivity extends FragmentActivity {
 	};
 	private View.OnClickListener sacrificeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			// TODO sacrifice
-			Log.d("INFOACTIVITY", "Sacrifice clicked");
-			
-			mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, null);
+			MakeSacrifice();
 		}
 		
 	};
+	
+	private void MakeSacrifice() {
+		Log.d("INFOACTIVITY", "Sacrifice clicked");
+		
+		mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, null);
+		
+	}
+	
 	private ViewPager.OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
 		
 		@Override
@@ -121,7 +132,10 @@ public class InfoActivity extends FragmentActivity {
 		
 		ViewPager pager = (ViewPager) super.findViewById(R.id.infoViewPager);
 		pager.setAdapter(this.pageAdapter);
-		pager.setOnPageChangeListener(pageChangeListener);
+		CirclePageIndicator pageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+		pageIndicator.setViewPager(pager);
+		pageIndicator.setOnPageChangeListener(pageChangeListener);
+		
 	}
 	
 	@Override
@@ -155,8 +169,8 @@ public class InfoActivity extends FragmentActivity {
 		editor.putBoolean(PREF_HASPAYED, true);
 		editor.commit();
 		
-		Toast.makeText(this, "The Gods smile upon you Soldier", Toast.LENGTH_LONG).show();
-		
+		Toast.makeText(this, "The Gods smile upon you Maximus", Toast.LENGTH_LONG).show();
+		SoundManager.instance.PlayACompletedTaunt();
 	}
 	
 	private class InfoPagerAdapter extends PagerAdapter {

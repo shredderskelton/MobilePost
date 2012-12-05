@@ -126,8 +126,25 @@ public class Security {
 			 * Generally, encryption keys / passwords should only be kept in
 			 * memory long enough to perform the operation they need to perform.
 			 */
-			String base64EncodedPublicKey = "your public key here";
-			PublicKey key = Security.generatePublicKey(base64EncodedPublicKey);
+			
+			String base64EncodedPublicKey = "MIIBfjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtlUYm6KBVhkMdnj8sluEtGc3H6cv91veyV0eiyPts+5Yet8O0YvJcffC5IIFUNKpvjmKbQWkvglPgJ+/DraRn3W8mALTn2S0PkZLvprhMkU6Fxr7yE8nHLcgOwTZJzw1LiAtepc7yVmTINyMRkoUUP+2rVPbUyHHewWt6Ufg9gQzL/0QWJ/GvaXe30Ngt2marGf8TXDQA77Ldwtblkbtk6ivBqA11fb3170SA+Zx8929EDWMwNfCc3OcAvsM/dNnc4esH9jhe8lxSB1yBAeBCroNvPjyzbtL5TtyZV3nWvddx41an85pOetHk1jEtazMUXt49d+vTw2jKKwcnXn0UQIDAQAB";
+//			String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtlUYm6KBVhkMdnj8sluEtGc3H6cv91veyV0eiyPts+5Yet8O0YvJcffC5IIFUNKpvjmKbQWkvglPgJ+/DraRn3W8mALTn2S0PkZLvprhMkU6Fxr7yE8nHLcgOwTZJzw1LiAtepc7yVmTINyMRkoUUP+2rVPbUyHHewWt6Ufg9gQzL/0QWJ/GvaXe30Ngt2marGf8TXDQA77Ldwtblkbtk6ivBqA11fb3170SA+Zx8929EDWMwNfCc3OcAvsM/dNnc4esH9jhe8lxSB1yBAeBCroNvPjyzbtL5TtyZV3nWvddx41an85pOetHk1jEtazMUXt49d+vTw2jKKwcnXn0UQIDAQAB";
+			
+			char[] chars = base64EncodedPublicKey.toCharArray();
+			String encoded = String.valueOf(chars);
+			
+			for (int j = 0; j < chars.length; j++) {
+				if (j == 4) {
+					chars[j] = 'I';
+					encoded = String.valueOf(chars);
+				}
+				
+			}
+//				chars[j] = (char) (chars[j] ^ 0x17);
+			// String encoded = String.valueOf(chars);
+//			Log.w(TAG, encoded);
+			
+			PublicKey key = Security.generatePublicKey(encoded);
 			verified = Security.verify(key, signedData, signature);
 			if (!verified) {
 				Log.w(TAG, "signature does not match data.");

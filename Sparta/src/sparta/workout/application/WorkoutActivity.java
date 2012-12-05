@@ -26,7 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+//import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
@@ -55,15 +55,15 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
 	
-	GoogleAnalyticsTracker tracker;
+//	GoogleAnalyticsTracker tracker;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.trackPageView("/workout");
+//		tracker = GoogleAnalyticsTracker.getInstance();
+//		tracker.trackPageView("/workout");
 		
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
@@ -226,7 +226,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private View.OnClickListener navInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			// TODO go to the info screen
-			navigateToInfo();
+			navigateToInfo(false);
 		}
 		
 	};
@@ -324,10 +324,12 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		finish();
 	}
 	
-	private void navigateToInfo() {
+	private void navigateToInfo(Boolean toMakePurchase) {
 		
 //TODO send the current exercise so that the info can scroll straight to it
 		intent = new Intent(this, InfoActivity.class);
+		intent.putExtra("PLAY", toMakePurchase);
+		
 		startActivity(intent);
 	}
 	
