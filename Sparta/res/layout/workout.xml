@@ -16,8 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/title_beginner" />
+        android:layout_marginTop="5dp" />
 
     <ImageButton
         android:id="@+id/imageViewNavBarHome"

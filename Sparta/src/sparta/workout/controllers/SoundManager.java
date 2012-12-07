@@ -297,6 +297,18 @@ public class SoundManager implements IWorkoutListener {
 		
 	}
 	
+	public void PlayNavInfo() {
+		
+		int resIdFromTheme = theme.getSoundresourceIdFor(SoundResource.control_info);
+		playResourceInSoundPool(resIdFromTheme, 1);
+		
+	}
+	
+	public void PlayNavBack() {
+		int resIdFromTheme = theme.getSoundresourceIdFor(SoundResource.control_back);
+		playResourceInSoundPool(resIdFromTheme, 1);
+	}
+	
 	public class PlaySoundQueueAsyncTask extends AsyncTask<SoundResource, Void, Void> {
 		
 		@Override

@@ -85,7 +85,7 @@ public class InfoActivity extends FragmentActivity {
 	/** Event listeners */
 	private View.OnClickListener closeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			
+			SoundManager.instance.PlayNavBack();
 			setResult(0); // forces the main screen to check for a payment
 			finish();
 		}
@@ -101,7 +101,7 @@ public class InfoActivity extends FragmentActivity {
 	private void MakeSacrifice() {
 		Log.d("INFOACTIVITY", "Sacrifice clicked");
 		
-		mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, null);
+		mBillingService.requestPurchase("spartacus.workout.keyofhonour", Consts.ITEM_TYPE_INAPP, null);
 		
 	}
 	
@@ -110,12 +110,14 @@ public class InfoActivity extends FragmentActivity {
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
 			// TODO Auto-generated method stub
-			
+			if (arg0 == ViewPager.SCROLL_STATE_IDLE) {
+				
+				SoundManager.instance.PlayAGrrTaunt();
+			}
 		}
 		
 		@Override
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			SoundManager.instance.PlayAGrrTaunt();
 		}
 		
 		@Override

@@ -182,10 +182,10 @@ public class Workout {
 		isAtStart = true;
 		listenerb.onWorkoutStarted();
 		listener.onWorkoutStarted();
-		
-		listener.onPlayATaunt();
-		listenerb.onPlayATaunt();
-		
+//		
+//		listener.onPlayATaunt();
+//		listenerb.onPlayATaunt();
+//		
 		// move to rest without raising event
 		isResting = true;
 		restartTimer(10 * 1000);// 10 secs to begin

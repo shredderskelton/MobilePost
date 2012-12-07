@@ -204,6 +204,7 @@ public class SpartaActivity extends Activity {
 	};
 	
 	private void navigateToInfoScreen(Boolean toMakePurchase) {
+		soundManager.instance.PlayNavInfo();
 		intent = new Intent(this, InfoActivity.class);
 		intent.putExtra("PLAY", toMakePurchase);
 		startActivityForResult(intent, 0);

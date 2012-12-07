@@ -13,12 +13,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -68,17 +69,18 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		setContentView(R.layout.workout);
-		
-		startupProgressDialog = new ProgressDialog(this);
-		
-		startupProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		startupProgressDialog.setMessage("Preparing for WAR!");
-		startupProgressDialog.setCancelable(false);
-		startupProgressDialog.show();
-		
+//		
+//		startupProgressDialog = new ProgressDialog(this);
+//		
+//		startupProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//		startupProgressDialog.setMessage("Preparing for WAR!");
+//		startupProgressDialog.setCancelable(false);
+//		startupProgressDialog.show();
+//		
 		soundManager = SoundManager.instance;
+		initialiseWorkout();
 		
-		new PrepareStartupAsyncTask().execute(new Object());
+		// new PrepareStartupAsyncTask().execute(new Object());
 		
 		currentExerciceText = (TextView) findViewById(R.id.textViewCurrentExercise);
 		pauseResumeButton = (ImageButton) findViewById(R.id.ImageButtonPlayPause);
@@ -98,14 +100,14 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExerciceText.setText("");
 		
 		// setup workout
-		workout = new Workout(this, soundManager);
+		
 		String typeOWorkout = getIntent().getStringExtra("WORKOUTTYPE");
 		
-		if (typeOWorkout == "Hero") {
+		if (typeOWorkout.equalsIgnoreCase("Hero")) {
 			workout.exerciseInterval = 60;
 			workout.restInterval = 15;
 			imageViewWorkoutLevel.setBackgroundResource(R.drawable.title_hero);
-		} else if (typeOWorkout == "Warrior") {
+		} else if (typeOWorkout.equalsIgnoreCase("Warrior")) {
 			workout.exerciseInterval = 60;
 			workout.restInterval = 30;
 			imageViewWorkoutLevel.setBackgroundResource(R.drawable.title_warrior);
@@ -115,6 +117,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			imageViewWorkoutLevel.setBackgroundResource(R.drawable.title_beginner);
 			
 		}
+		
+		AddHandlers();
+		currentExercise = workout.getCurrentExercise();
+		workout.restartWorkout();
 		
 	}
 	
@@ -137,47 +143,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-	
-	public class PrepareStartupAsyncTask extends AsyncTask<Object, Void, Void> {
-		
-		@Override
-		protected Void doInBackground(Object... o) {
-			
-			// initSoundPool();
-			initialiseWorkout();
-			
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			
-			AddHandlers();
-			prepareForWar();
-			startupProgressDialog.dismiss();
-			
-			super.onPostExecute(result);
-			
-		}
-	}
-	
-	private void prepareForWar() {
-		// V1.1 Bug A is coming from here sometimes
-		// using the stack trace to find it - totally shit but what can you do
-		soundManager.PlayATaunt();
-		prepareForWar2();
-		prepareForWar3();
-	}
-	
-	private void prepareForWar2() {
-		// V1.1 Bug A is coming from here sometimes
-		currentExercise = workout.getCurrentExercise();
-	}
-	
-	private void prepareForWar3() {
-		// V1.1 Bug A is coming from here sometimes
-		workout.restartWorkout();
 	}
 	
 	private void AllDone() {
@@ -325,7 +290,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	private void navigateToInfo(Boolean toMakePurchase) {
-		
+		soundManager.instance.PlayNavInfo();
 //TODO send the current exercise so that the info can scroll straight to it
 		intent = new Intent(this, InfoActivity.class);
 		intent.putExtra("PLAY", toMakePurchase);
@@ -334,6 +299,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	public void initialiseWorkout() {
+		workout = new Workout(this, soundManager);
 		
 		workout.addExercise(fromJson(R.raw.json_goblet));
 		workout.addExercise(fromJson(R.raw.json_mountainclimber));
@@ -456,6 +422,60 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	@Override
 	public void onHalfwayThroughExercise() {
+		// hassle logic
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String hassleStr = getResources().getString(R.string.hasslemeter);
+		
+		int hassle = prefs.getInt(getResources().getString(R.string.hasslemeter), 0);
+		
+		if (hassle % 11 == 0) {
+			
+			// wait for halfway to sound
+			
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			SoundManager.instance.PlayABuyTaunt();
+			
+			String message = "Unlock your full Spartan potential? Choose your fate:";
+			String yes = "Glory";
+			String no = "Disgrace";
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+			builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					
+					navigateToInfo(true);
+					
+					dialog.dismiss();
+					
+				}
+			}).setNegativeButton(no, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					SoundManager.instance.PlayAQuitterTaunt();
+					
+					dialog.dismiss();
+				}
+			});
+			
+			pauseWorkout();
+			AlertDialog alert = builder.create();
+			alert.show();
+			
+		}
+		
+		hassle++;
+		Editor editor = prefs.edit();
+		editor.putInt(hassleStr, hassle);
+		editor.commit();
 		
 	}
 	
