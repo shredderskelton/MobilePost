@@ -44,6 +44,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	ImageButton imageViewPaused;
 	ImageView imageViewWorkoutLevel;
 	
+	View finishedView;
+	ImageButton buttonPostToFaceBook;
+	ImageButton buttonPostToTwitter;
+	
 	Intent intent;
 	
 	SoundManager soundManager;
@@ -55,6 +59,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	SharedPreferences prefs;
 	ProgressDialog startupProgressDialog;
+	
+	Boolean hasFinishedWorkout = false;
 	
 //	GoogleAnalyticsTracker tracker;
 	
@@ -95,6 +101,12 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		imageViewPaused.setAlpha(90);
 		imageViewPaused.setVisibility(ImageView.INVISIBLE);
 		imageViewWorkoutLevel = (ImageView) findViewById(R.id.imageViewNavBarWorkoutTitle);
+		finishedView = (View) findViewById(R.id.viewHolderFinished);
+		buttonPostToFaceBook = (ImageButton) findViewById(R.id.ImageButtonPostToFb);
+		buttonPostToTwitter = (ImageButton) findViewById(R.id.ImageButtonPostToTwitter);
+		
+		finishedView.setVisibility(View.INVISIBLE);
+		
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_prepare);
 		
 		currentExerciceText.setText("");
@@ -147,23 +159,27 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void AllDone() {
 		
+		hasFinishedWorkout = true;
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_rest);
 		currentExerciceText.setText("All Done");
 		upNextExerciceText.setText("");
-		String message = "It's an honour to die by your side";
-		String yes = "Ok";
-		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
-		builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				
-				navigateBacktomain();
-				
-				dialog.dismiss();
-				
-			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+		
+		finishedView.setVisibility(View.VISIBLE);
+//		
+//		String message = "It's an honour to die by your side";
+//		String yes = "Ok";
+//		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+//		builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				
+//				navigateBacktomain();
+//				
+//				dialog.dismiss();
+//				
+//			}
+//		});
+//		AlertDialog alert = builder.create();
+//		alert.show();
 	}
 	
 	private void RemoveHandlers() {
@@ -184,9 +200,25 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		pauseResumeButton.setOnClickListener(pauseresumeButtonClickListener);
 		previousButton.setOnClickListener(previousButtonClickListener);
 		skipButton.setOnClickListener(skipButtonClickListener);
+		buttonPostToFaceBook.setOnClickListener(postFacebookButtonClickListener);
+		buttonPostToTwitter.setOnClickListener(postTwitterClickListener);
 	}
 	
 	/** Event listeners */
+	
+	private View.OnClickListener postFacebookButtonClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			postToFacebook();
+		}
+		
+	};
+	
+	private View.OnClickListener postTwitterClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			postToTwitter();
+		}
+		
+	};
 	
 	private View.OnClickListener navInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
@@ -197,8 +229,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	};
 	private View.OnClickListener navHomeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			// TODO go to the home screen
-			confirmStopWorkout();
+			if (hasFinishedWorkout)
+				navigateBacktomain();
+			else
+				confirmStopWorkout();
 		}
 		
 	};
@@ -241,30 +275,32 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private void confirmStopWorkout() {
 		
-		// pauseWorkout();
-		soundManager.onQuit();
-//		String message = "Are you sure you want to cancel the workout?";
-//		String title = "Leave Sparta with your tail between your legs?";
-//		String yes = "I am a pussy";
-//		String no = "Hell no!";
-//		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
-//		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int id) {
-//				
-//				navigateBacktomain();
-//				
-//				dialog.dismiss();
-//				
-//			}
-//		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int id) {
-//				resumeWorkout();
-//				dialog.cancel();
-//			}
-//		});
-//		AlertDialog alert = builder.create();
-//		alert.show();
-		navigateBacktomain();
+		pauseWorkout();
+		String message = "Are you sure you want to cancel the workout?";
+		String title = "Leave Sparta with your tail between your legs?";
+		String yes = "I am a pussy";
+		String no = "Hell no!";
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				
+				soundManager.onQuit();
+				
+				navigateBacktomain();
+				
+				dialog.dismiss();
+				
+			}
+		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				soundManager.instance.PlayAGrrTaunt();
+				resumeWorkout();
+				dialog.cancel();
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 		
 	}
 	
@@ -296,6 +332,16 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		intent.putExtra("PLAY", toMakePurchase);
 		
 		startActivity(intent);
+	}
+	
+	private void postToFacebook() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void postToTwitter() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public void initialiseWorkout() {

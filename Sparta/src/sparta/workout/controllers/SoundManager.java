@@ -370,7 +370,8 @@ public class SoundManager implements IWorkoutListener {
 	
 	@Override
 	public void onExerciseStarted(Exercise exercise, Boolean skipping) {
-		AnnounceCurrentExercise(exercise);
+		if (!skipping)
+			AnnounceCurrentExercise(exercise);
 	}
 	
 	@Override

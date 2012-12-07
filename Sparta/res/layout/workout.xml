@@ -141,4 +141,39 @@
         android:src="@drawable/workout_pause_overlay_btn"
         android:visibility="visible" />
 
+    <RelativeLayout
+        android:id="@+id/viewHolderFinished"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/imageViewNavBarUnderlay"
+        android:background="#000000" >
+
+        <ImageView
+            android:id="@+id/imageViewFinishedOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:src="@drawable/finished_graphic"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/ImageButtonPostToFb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageViewFinishedOverlay"
+            android:layout_marginLeft="20dp"
+            android:background="@null"
+            android:src="@drawable/button_post_facebook" />
+
+        <ImageButton
+            android:id="@+id/ImageButtonPostToTwitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageViewFinishedOverlay"
+            android:layout_toRightOf="@+id/ImageButtonPostToFb"
+            android:background="@null"
+            android:src="@drawable/button_post_twitter" />
+    </RelativeLayout>
+
 </RelativeLayout>
