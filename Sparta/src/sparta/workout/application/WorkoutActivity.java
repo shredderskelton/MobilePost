@@ -258,7 +258,10 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			confirmStopWorkout();
+			if (hasFinishedWorkout)
+				navigateBacktomain();
+			else
+				confirmStopWorkout();
 			return true;
 		}
 		if (KeyEvent.KEYCODE_VOLUME_UP == event.getKeyCode()) {
