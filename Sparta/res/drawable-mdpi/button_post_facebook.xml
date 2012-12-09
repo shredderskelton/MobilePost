@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/end_screen_btns_down_01" android:state_pressed="true"/>
-    <item android:drawable="@drawable/end_screen_btns_up_01"/>
+    <item android:drawable="@drawable/end_screen_btns_down_02" android:state_pressed="true"/>
+    <item android:drawable="@drawable/end_screen_btns_up_02"/>
 
 </selector>

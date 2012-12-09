@@ -1,6 +1,7 @@
 package sparta.workout.application;
 
 import java.io.InputStream;
+import java.util.Arrays;
 
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.AnimationResource;
@@ -10,6 +11,7 @@ import sparta.workout.models.Workout;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +28,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.FacebookException;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 
 //import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
@@ -62,12 +71,39 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	Boolean hasFinishedWorkout = false;
 	
-//	GoogleAnalyticsTracker tracker;
+	// Facebook Stuff
+	Session.StatusCallback statusCallback = new SessionStatusCallback();
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		
+		// Get the active Session, if it exists
+		Session session = Session.getActiveSession();
+		// If no active session is found, check if you can
+		// find a cached session.
+		if (session == null) {
+			if (savedInstanceState != null) {
+				// Restore any session saved in the state
+				session = Session.restoreSession(this, null, statusCallback, savedInstanceState);
+			}
+			// Check if there was any session restored
+			if (session == null) {
+				// Instantiate a new Session
+				session = new Session(this);
+			}
+			// Set the active session
+			Session.setActiveSession(session);
+			// Check if a cached token is available
+			if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
+				// If a cached token found, open the session
+				// and call the session state changed callback.
+				// The opened session will have the same permissions
+				// that it was cached with.
+				session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback));
+			}
+		}
 		
 //		tracker = GoogleAnalyticsTracker.getInstance();
 //		tracker.trackPageView("/workout");
@@ -134,6 +170,89 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		currentExercise = workout.getCurrentExercise();
 		workout.restartWorkout();
 		
+	}
+	
+	private void onSessionStateChange(SessionState state, Exception exception) {
+		Log.d("FACEBOOK", "SessionStateChanged");
+		Session session = Session.getActiveSession();
+		// Check if the session is open
+		if (state.isOpened()) {
+			// Code to turn on Facebook functionality
+			Log.d("FACEBOOK", "SessionStateChanged - Opened");
+			postToFacebook();
+		} else {
+			Log.d("FACEBOOK", "SessionStateChanged - Not opened");
+			// Code to turn off Facebook functionality
+		}
+	}
+	
+	private class SessionStatusCallback implements Session.StatusCallback {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+			onSessionStateChange(state, exception);
+		}
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		// Your existing onSaveInstanceState code
+		
+		// Save the Facebook session in the Bundle
+		Session session = Session.getActiveSession();
+		Session.saveSession(session, outState);
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		
+		// Your existing onStart code.
+		Log.d("FACEBOOK", "OnStart");
+		Session.getActiveSession().addCallback(statusCallback);
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		
+		// Your existing onStop code.
+		Log.d("FACEBOOK", "OnStop");
+		
+		Session.getActiveSession().removeCallback(statusCallback);
+	}
+	
+	private void onClickFacebookLogin() {
+		
+		Log.d("FACEBOOK", "OnClickFaceBookLogin");
+		
+		Session session = Session.getActiveSession();
+		if (!session.isOpened() && !session.isClosed()) {
+			session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback).setPermissions(Arrays.asList("user_likes", "user_status")));
+		} else {
+			Session.openActiveSession(this, true, statusCallback);
+		}
+	}
+	
+	private void onClickFacebookLogout() {
+		
+		Log.d("FACEBOOK", "OnClickFaceBookLogout");
+		
+		Session session = Session.getActiveSession();
+		session.closeAndClearTokenInformation();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		// Your existing onActivityResult code
+		
+		if (requestCode == Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE) {
+			Session.getActiveSession().addCallback(statusCallback);
+			Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		}
 	}
 	
 	@Override
@@ -208,7 +327,8 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	
 	private View.OnClickListener postFacebookButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			postToFacebook();
+			onClickFacebookLogin();
+			// Session.openActiveSession(getActivity());
 		}
 		
 	};
@@ -305,7 +425,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		
 		RemoveHandlers();
 		intent = null;
@@ -326,7 +446,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	private void navigateToInfo(Boolean toMakePurchase) {
-		soundManager.instance.PlayNavInfo();
+		SoundManager.instance.PlayNavInfo();
 //TODO send the current exercise so that the info can scroll straight to it
 		intent = new Intent(this, InfoActivity.class);
 		intent.putExtra("PLAY", toMakePurchase);
@@ -335,8 +455,36 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	}
 	
 	private void postToFacebook() {
-		// TODO Auto-generated method stub
 		
+		Bundle params = new Bundle();
+		params.putString("name", "Spartacus Epic Workout");
+		params.putString("caption", "Available now for iOS and Android");
+		params.putString("description", "The Spartacus Workout will take a mere mortal and transform their body into a honed god of the arena.");
+		params.putString("link", "http://www.facebook.com/spartacusepicworkouts");
+		params.putString("picture", "http://www.screendirt.com/workout_scene_facebook_small.png");
+		Bundle actionParams = new Bundle();
+		actionParams.putString("name", "Get Started");
+		actionParams.putString("link", "http://www.facebook.com/spartacusepicworkouts");
+		params.putBundle("actions", actionParams);
+		
+		WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this, Session.getActiveSession(), params)).setOnCompleteListener(new OnCompleteListener() {
+			@Override
+			public void onComplete(Bundle values, FacebookException error) {
+				// When the story is posted, echo the success
+				// and the post Id.
+				final String postId = values.getString("post_id");
+				if (postId != null) {
+					
+					Toast.makeText(getActivity(), "The Gods have heard your prayers", Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+		}).build();
+		feedDialog.show();
+	}
+	
+	private Context getActivity() {
+		return this;
 	}
 	
 	private void postToTwitter() {
