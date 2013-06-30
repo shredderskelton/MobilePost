@@ -21,7 +21,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -400,9 +399,9 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		
 		pauseWorkout();
 		String message = "Are you sure you want to cancel the workout?";
-		String title = "Leave Sparta with your tail between your legs?";
-		String yes = "I am a pussy";
-		String no = "Hell no!";
+		String title = "A mistake?";
+		String yes = "I submit";
+		String no = "I crave Glory!";
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
 		builder.setMessage(message).setCancelable(false).setTitle(title).setPositiveButton(yes, new DialogInterface.OnClickListener() {
@@ -417,7 +416,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 			}
 		}).setNegativeButton(no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				soundManager.instance.PlayAGrrTaunt();
+				soundManager.PlayAGrrTaunt();
 				resumeWorkout();
 				dialog.cancel();
 			}
@@ -617,63 +616,73 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_rest);
 	}
 	
+	private boolean userHasPaid() {
+		
+		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+		String PREF_HASPAYED = getResources().getString(R.string.PREF_HASPAYED);
+		Boolean hasPayed = prefs.getBoolean(PREF_HASPAYED, false);
+		return hasPayed;
+		
+	}
+	
 	@Override
 	public void onHalfwayThroughExercise() {
 		// hassle logic
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		String hassleStr = getResources().getString(R.string.hasslemeter);
-		
-		int hassle = prefs.getInt(getResources().getString(R.string.hasslemeter), 0);
-		
-		if (hassle % 11 == 0) {
+		if (!userHasPaid()) {
+			SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+			String hassleStr = getResources().getString(R.string.hasslemeter);
 			
-			// wait for halfway to sound
+			int hassle = prefs.getInt(getResources().getString(R.string.hasslemeter), 0);
 			
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (hassle % 11 == 0) {
+				
+				// wait for halfway to sound
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				SoundManager.instance.PlayABuyTaunt();
+				
+				String message = "Unlock your full Spartan potential? Choose your fate:";
+				String yes = "Glory";
+				String no = "Disgrace";
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+				builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						
+						navigateToInfo(true);
+						
+						dialog.dismiss();
+						
+					}
+				}).setNegativeButton(no, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						SoundManager.instance.PlayAQuitterTaunt();
+						
+						dialog.dismiss();
+					}
+				});
+				
+				pauseWorkout();
+				AlertDialog alert = builder.create();
+				alert.show();
+				
 			}
 			
-			SoundManager.instance.PlayABuyTaunt();
-			
-			String message = "Unlock your full Spartan potential? Choose your fate:";
-			String yes = "Glory";
-			String no = "Disgrace";
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
-			builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					
-					navigateToInfo(true);
-					
-					dialog.dismiss();
-					
-				}
-			}).setNegativeButton(no, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					SoundManager.instance.PlayAQuitterTaunt();
-					
-					dialog.dismiss();
-				}
-			});
-			
-			pauseWorkout();
-			AlertDialog alert = builder.create();
-			alert.show();
-			
+			hassle++;
+			Editor editor = prefs.edit();
+			editor.putInt(hassleStr, hassle);
+			editor.commit();
 		}
-		
-		hassle++;
-		Editor editor = prefs.edit();
-		editor.putInt(hassleStr, hassle);
-		editor.commit();
-		
 	}
 	
 	@Override

@@ -12,9 +12,17 @@
     <string name="PREF_RESTTIME">RESTIME</string>
     <string name="PREF_VOICE">VOICE</string>
     <string name="PREF_HASPAYED">87uh9g8</string>
+    <string name="PREF_HASRESTOREDPURCHASES">asdasd342</string>
     <string name="EXTRA_WANTSTOPAY">jdjkksl</string>
     <string name="hasslemeter">jhksjdhf</string>
     <string name="app_id">321260514613109</string>
+    <string name="productId">android.test.purchased</string>
+    <!--
+   <string name="productId">android.test.canceled</string>
+    <string name="productId">android.test.refunded</string>
+    <string name="productId">android.test.item_unavailable</string>
+   <string name="productId">spartacus.workout.keyofhonour</string>
+    -->
 
     <string-array name="interval_options">
         <item>5</item>
