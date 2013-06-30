@@ -26,14 +26,13 @@ public class PurchaseManager {
 	static final String PREF_FILE = "scroll";
 	
 	static final int RC_REQUEST = 10010;
-	public static Boolean mHasPurchased;
 	
 	IabHelper mInAppHelper;
 	Context context;
-	PurchaseManager instance;
+	static PurchaseManager instance;
 	
 	PurchaseManager(Context context) {
-		
+		this.context = context;
 		/*
 		 * base64EncodedPublicKey should be YOUR APPLICATION'S PUBLIC KEY (that
 		 * you got from the Google Play developer console). This is not your
@@ -90,7 +89,7 @@ public class PurchaseManager {
 		
 	}
 	
-	public PurchaseManager getInstance(Context context) {
+	public static PurchaseManager getInstance(Context context) {
 		if (instance == null)
 			instance = new PurchaseManager(context);
 		return instance;
@@ -98,7 +97,6 @@ public class PurchaseManager {
 	
 	private void saveTheFactTheUserHasPaid() {
 		
-		mHasPurchased = true;
 		SharedPreferences prefs = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
 		String PREF_HASPAYED = context.getResources().getString(R.string.PREF_HASPAYED);
 		prefs.edit().putBoolean(PREF_HASPAYED, true).commit();
@@ -106,10 +104,7 @@ public class PurchaseManager {
 	}
 	
 	public boolean userHasPaid() {
-		return mHasPurchased || sharedPrefsUserHasPaid();
-	}
-	
-	boolean sharedPrefsUserHasPaid() {
+		
 		SharedPreferences prefs = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
 		String PREF_HASPAYED = context.getResources().getString(R.string.PREF_HASPAYED);
 		Boolean hasPayed = prefs.getBoolean(PREF_HASPAYED, false);
@@ -184,12 +179,12 @@ public class PurchaseManager {
 			
 			// Do we have the premium upgrade?
 			Purchase premiumPurchase = inventory.getPurchase(PurchaseManager.SKU_UNLOCK);
-			PurchaseManager.mHasPurchased = (premiumPurchase != null);
-			String inventoryResult = "User " + (PurchaseManager.mHasPurchased ? "has" : "hasn't") + " paid.";
+			boolean mHasPurchased = (premiumPurchase != null);
+			String inventoryResult = "User " + (mHasPurchased ? "has" : "hasn't") + " paid.";
 //			complain(inventoryResult);
 			Log.d(TAG, inventoryResult);
 			
-			if (PurchaseManager.mHasPurchased) {
+			if (mHasPurchased) {
 				saveTheFactTheUserHasPaid();
 				reportItemAlreadyOwnedToListeners();
 			}
