@@ -33,18 +33,7 @@ public class PurchaseManager {
 	
 	PurchaseManager(Context context) {
 		this.context = context;
-		/*
-		 * base64EncodedPublicKey should be YOUR APPLICATION'S PUBLIC KEY (that
-		 * you got from the Google Play developer console). This is not your
-		 * developer public key, it's the *app-specific* public key.
-		 * 
-		 * Instead of just storing the entire literal string here embedded in
-		 * the program, construct the key at runtime from pieces or use bit
-		 * manipulation (for example, XOR with some other string) to hide the
-		 * actual key. The key itself is not secret information, but we don't
-		 * want to make it easy for an attacker to replace the public key with
-		 * one of their own and then fake messages from the server.
-		 */
+		
 		String base64EncodedPublicKey = "MIIBfjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtlUYm6KBVhkMdnj8sluEtGc3H6cv91veyV0eiyPts+5Yet8O0YvJcffC5IIFUNKpvjmKbQWkvglPgJ+/DraRn3W8mALTn2S0PkZLvprhMkU6Fxr7yE8nHLcgOwTZJzw1LiAtepc7yVmTINyMRkoUUP+2rVPbUyHHewWt6Ufg9gQzL/0QWJ/GvaXe30Ngt2marGf8TXDQA77Ldwtblkbtk6ivBqA11fb3170SA+Zx8929EDWMwNfCc3OcAvsM/dNnc4esH9jhe8lxSB1yBAeBCroNvPjyzbtL5TtyZV3nWvddx41an85pOetHk1jEtazMUXt49d+vTw2jKKwcnXn0UQIDAQAB";
 //		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtlUYm6KBVhkMdnj8sluEtGc3H6cv91veyV0eiyPts+5Yet8O0YvJcffC5IIFUNKpvjmKbQWkvglPgJ+/DraRn3W8mALTn2S0PkZLvprhMkU6Fxr7yE8nHLcgOwTZJzw1LiAtepc7yVmTINyMRkoUUP+2rVPbUyHHewWt6Ufg9gQzL/0QWJ/GvaXe30Ngt2marGf8TXDQA77Ldwtblkbtk6ivBqA11fb3170SA+Zx8929EDWMwNfCc3OcAvsM/dNnc4esH9jhe8lxSB1yBAeBCroNvPjyzbtL5TtyZV3nWvddx41an85pOetHk1jEtazMUXt49d+vTw2jKKwcnXn0UQIDAQAB";
 		
@@ -63,7 +52,8 @@ public class PurchaseManager {
 		Log.d(TAG, "Creating IAB helper.");
 		mInAppHelper = new IabHelper(context, encoded);
 		
-		// enable debug logging (for a production application, you should set
+		// enable debug logging (for a production application, you should
+		// set
 		// this to false).
 		mInAppHelper.enableDebugLogging(true);
 		
@@ -80,13 +70,11 @@ public class PurchaseManager {
 					return;
 				}
 				
-				// Hooray, IAB is fully set up. Now, let's get an inventory of
-				// stuff we own.
 				Log.d(TAG, "Setup successful. Querying inventory.");
 				mInAppHelper.queryInventoryAsync(mGotInventoryListener);
 			}
+			
 		});
-		
 	}
 	
 	public static PurchaseManager getInstance(Context context) {
@@ -103,16 +91,25 @@ public class PurchaseManager {
 		
 	}
 	
-	public boolean userHasPaid() {
+	public static boolean userHasPaid(Context mContext) {
 		
-		SharedPreferences prefs = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-		String PREF_HASPAYED = context.getResources().getString(R.string.PREF_HASPAYED);
+		SharedPreferences prefs = mContext.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+		String PREF_HASPAYED = mContext.getResources().getString(R.string.PREF_HASPAYED);
 		Boolean hasPayed = prefs.getBoolean(PREF_HASPAYED, false);
 		return hasPayed;
 	}
 	
 	public void purchase(Activity activity) {
-		mInAppHelper.launchPurchaseFlow(activity, SKU_UNLOCK, RC_REQUEST, mPurchaseFinishedListener);
+		
+		if (userHasPaid(context)) {
+			reportItemAlreadyOwnedToListeners();
+		} else {
+			try {
+				mInAppHelper.launchPurchaseFlow(activity, SKU_UNLOCK, RC_REQUEST, mPurchaseFinishedListener);
+			} catch (IllegalStateException e) {
+				reportErrorToListeners("Would you give it a second? It's going all the way to space!");
+			}
+		}
 	}
 	
 	List<IPurchaseListener> listeners = new ArrayList<IPurchaseListener>();
@@ -190,4 +187,5 @@ public class PurchaseManager {
 			}
 		}
 	};
+	
 }

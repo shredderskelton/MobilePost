@@ -3,6 +3,7 @@ package sparta.workout.application;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import sparta.workout.application.PurchaseManager.IPurchaseListener;
 import sparta.workout.controllers.SoundManager;
 import sparta.workout.models.AnimationResource;
 import sparta.workout.models.Exercise;
@@ -37,7 +38,7 @@ import com.facebook.widget.WebDialog.OnCompleteListener;
 
 //import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class WorkoutActivity extends Activity implements IWorkoutListener {
+public class WorkoutActivity extends Activity implements IWorkoutListener, IPurchaseListener {
 	
 	TextView currentExerciceText;
 	ImageButton pauseResumeButton;
@@ -345,7 +346,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	private View.OnClickListener navInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			// TODO go to the info screen
-			navigateToInfo(false);
+			navigateToInfo();
 		}
 		
 	};
@@ -447,12 +448,15 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		finish();
 	}
 	
-	private void navigateToInfo(Boolean toMakePurchase) {
+	void makePurchase() {
+		PurchaseManager.getInstance(this).addListener(this);
+		PurchaseManager.getInstance(this).purchase(this);
+	}
+	
+	private void navigateToInfo() {
 		SoundManager.instance.PlayNavInfo();
 //TODO send the current exercise so that the info can scroll straight to it
 		intent = new Intent(this, InfoActivity.class);
-		intent.putExtra("PLAY", toMakePurchase);
-		
 		startActivity(intent);
 	}
 	
@@ -616,20 +620,11 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 		exerciseImageViewAnimations.setBackgroundResource(R.drawable.workout_anims_rest);
 	}
 	
-	private boolean userHasPaid() {
-		
-		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
-		String PREF_HASPAYED = getResources().getString(R.string.PREF_HASPAYED);
-		Boolean hasPayed = prefs.getBoolean(PREF_HASPAYED, false);
-		return hasPayed;
-		
-	}
-	
 	@Override
 	public void onHalfwayThroughExercise() {
 		// hassle logic
 		
-		if (!userHasPaid()) {
+		if (PurchaseManager.userHasPaid(this)) {
 			SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 			String hassleStr = getResources().getString(R.string.hasslemeter);
 			
@@ -656,7 +651,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 				builder.setCancelable(false).setTitle(message).setPositiveButton(yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						
-						navigateToInfo(true);
+						makePurchase();
 						
 						dialog.dismiss();
 						
@@ -688,6 +683,41 @@ public class WorkoutActivity extends Activity implements IWorkoutListener {
 	@Override
 	public void onPlayATaunt() {
 		
+	}
+	
+	public void PurchaseSuceeded() {
+		
+		Toast.makeText(this, "The Gods smile upon you Maximus", Toast.LENGTH_LONG).show();
+		SoundManager.instance.PlayACompletedTaunt();
+	}
+	
+	public void RestorePurchaseSuceeded() {
+		
+		Toast.makeText(this, "Welcome back Maximus", Toast.LENGTH_LONG).show();
+		SoundManager.instance.PlayACompletedTaunt();
+	}
+	
+	public void PurchaseFailed() {
+		
+		Toast.makeText(this, "Purchase failed", Toast.LENGTH_LONG).show();
+		SoundManager.instance.PlayAQuitterTaunt();
+	}
+	
+	@Override
+	public void onPurchaseSuccess() {
+		PurchaseSuceeded();
+		
+	}
+	
+	@Override
+	public void onItemAlreadyOwned() {
+		RestorePurchaseSuceeded();
+		
+	}
+	
+	@Override
+	public void onError(String err) {
+		PurchaseFailed();
 	}
 	
 }

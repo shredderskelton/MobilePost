@@ -41,6 +41,8 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		PurchaseManager.getInstance(this);
+		
 		initUI();
 		
 		AddUIHandlers();
@@ -48,9 +50,6 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 		unlockScreenIfUserHasPaid();
 		
 		initSound();
-		
-		PurchaseManager.getInstance(this).addListener(this);
-		
 	}
 	
 	private void initUI() {
@@ -76,17 +75,6 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 		soundManager = SoundManager.instance;
 		soundManager.Initialise();
 		
-		infoButton.post(new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				soundManager.PlayWelcome();
-			}
-		});
 	}
 	
 	@Override
@@ -106,6 +94,7 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
+		PurchaseManager.getInstance(this).addListener(this);
 		unlockScreenIfUserHasPaid();
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -140,7 +129,7 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 	};
 	private View.OnClickListener startWarriorButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			if (PurchaseManager.getInstance(getApplicationContext()).userHasPaid()) {
+			if (PurchaseManager.userHasPaid(getApplicationContext())) {
 				StartWorkout("Warrior");
 			} else {
 				ConfirmThePurchase();
@@ -150,7 +139,7 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 	};
 	private View.OnClickListener startHeroButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			if (PurchaseManager.getInstance(getApplicationContext()).userHasPaid()) {
+			if (PurchaseManager.userHasPaid(getApplicationContext())) {
 				StartWorkout("Hero");
 			} else {
 				ConfirmThePurchase();
@@ -170,7 +159,7 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 		intent = new Intent(this, InfoActivity.class);
 		intent.putExtra("PLAY", toMakePurchase);
 		startActivityForResult(intent, 0);
-		
+		PurchaseManager.getInstance(this).removeListener(this);
 	}
 	
 	private void StartWorkout(String diff) {
@@ -182,9 +171,14 @@ public class SpartaActivity extends Activity implements IPurchaseListener {
 	
 	private void unlockScreenIfUserHasPaid() {
 		
-		if (PurchaseManager.getInstance(this).userHasPaid()) {
+		if (PurchaseManager.userHasPaid(this)) {
 			lockIconWarrior.setVisibility(ImageView.INVISIBLE);
 			lockIconHero.setVisibility(ImageView.INVISIBLE);
+		} else {
+			// start up the in app helper and register as a listener
+			// the purchase manager will startup and call us back if the user as
+			// already paid.
+			PurchaseManager.getInstance(this).addListener(this);
 		}
 	}
 	

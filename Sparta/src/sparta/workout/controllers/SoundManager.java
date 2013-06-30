@@ -82,6 +82,8 @@ public class SoundManager implements IWorkoutListener {
 		fillTaunts();
 		
 		initialised = true;
+		
+		PlayWelcome();
 	}
 	
 	private void fillTaunts() {

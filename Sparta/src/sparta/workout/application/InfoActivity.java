@@ -1,5 +1,6 @@
 package sparta.workout.application;
 
+import sparta.workout.application.PurchaseManager.IPurchaseListener;
 import sparta.workout.controllers.SoundManager;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -16,7 +17,7 @@ import android.widget.Toast;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
-public class InfoActivity extends Activity {
+public class InfoActivity extends Activity implements IPurchaseListener {
 	
 	private ImageButton button_sacrifice;
 	private ImageButton button_close;
@@ -36,18 +37,12 @@ public class InfoActivity extends Activity {
 		button_close = (ImageButton) findViewById(R.id.imageViewButtonClose);
 		button_close.setOnClickListener(closeButtonClickListener);
 		
-		Boolean play = getIntent().getBooleanExtra("PLAY", false);
-		
-		if (play)
-			MakeSacrifice();
 	}
 	
 	/** Event listeners */
 	private View.OnClickListener closeButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			SoundManager.instance.PlayNavBack();
-			setResult(0); // forces the main screen to check for a payment
-			finish();
+			navigateBack();
 		}
 		
 	};
@@ -58,8 +53,18 @@ public class InfoActivity extends Activity {
 		
 	};
 	
+	void navigateBack() {
+		PurchaseManager.getInstance(getApplicationContext()).removeListener(this);
+		SoundManager.instance.PlayNavBack();
+		setResult(0); // forces the main screen to check for a payment
+		finish();
+	}
+	
 	private void MakeSacrifice() {
 		Log.d("INFOACTIVITY", "Sacrifice clicked");
+		PurchaseManager.getInstance(this).addListener(this);
+		
+		PurchaseManager.getInstance(this).purchase(this);
 	}
 	
 	private ViewPager.OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
@@ -99,25 +104,29 @@ public class InfoActivity extends Activity {
 	
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
-		
 		super.onStart();
 	}
 	
 	@Override
 	protected void onStop() {
-		// TODO Auto-generated method stub
 		super.onStop();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		PurchaseManager.getInstance(this).removeListener(this);
 	};
 	
 	public void PurchaseSuceeded() {
 		
 		Toast.makeText(this, "The Gods smile upon you Maximus", Toast.LENGTH_LONG).show();
+		SoundManager.instance.PlayACompletedTaunt();
+	}
+	
+	public void RestorePurchaseSuceeded() {
+		
+		Toast.makeText(this, "Welcome back Maximus", Toast.LENGTH_LONG).show();
 		SoundManager.instance.PlayACompletedTaunt();
 	}
 	
@@ -200,6 +209,23 @@ public class InfoActivity extends Activity {
 			return null;
 		}
 		
+	}
+	
+	@Override
+	public void onPurchaseSuccess() {
+		PurchaseSuceeded();
+		
+	}
+	
+	@Override
+	public void onItemAlreadyOwned() {
+		RestorePurchaseSuceeded();
+		
+	}
+	
+	@Override
+	public void onError(String err) {
+		PurchaseFailed();
 	}
 	
 }
