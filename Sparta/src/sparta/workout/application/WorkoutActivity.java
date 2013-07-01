@@ -345,7 +345,6 @@ public class WorkoutActivity extends Activity implements IWorkoutListener, IPurc
 	
 	private View.OnClickListener navInfoButtonClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			// TODO go to the info screen
 			navigateToInfo();
 		}
 		
@@ -444,6 +443,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener, IPurc
 	};
 	
 	private void navigateBacktomain() {
+		PurchaseManager.getInstance(this).removeListener(this);
 		onDestroy();
 		finish();
 	}
@@ -456,6 +456,9 @@ public class WorkoutActivity extends Activity implements IWorkoutListener, IPurc
 	private void navigateToInfo() {
 		SoundManager.instance.PlayNavInfo();
 //TODO send the current exercise so that the info can scroll straight to it
+		
+		PurchaseManager.getInstance(getApplicationContext()).removeListener(this);
+		
 		intent = new Intent(this, InfoActivity.class);
 		startActivity(intent);
 	}
@@ -624,7 +627,7 @@ public class WorkoutActivity extends Activity implements IWorkoutListener, IPurc
 	public void onHalfwayThroughExercise() {
 		// hassle logic
 		
-		if (PurchaseManager.userHasPaid(this)) {
+		if (!PurchaseManager.userHasPaid(this)) {
 			SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 			String hassleStr = getResources().getString(R.string.hasslemeter);
 			
